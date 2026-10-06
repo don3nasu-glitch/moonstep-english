@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1026">
+<title>Moonstep English</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap">
+<style>
+/* Layout: one narrow column like a phone app; a vertical path of waxing moons is the lesson map. Single dark world by choice. */
+:root{
+  color-scheme:dark;
+  --night:#0b1026; --deep:#141b3d; --panel:#1c2550; --line:#34407a;
+  --ink:#e9ecff; --dim:#9aa3d4;
+  --flame:#4fb4ff; --flame-ink:#06203a; --moon:#f3e3a6;
+  --ok:#6fe0a8; --ng:#ff8a8a;
+  --display:"Shippori Mincho","Hiragino Mincho ProN",serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+}
+html,body{height:100%}
+body{background:radial-gradient(120% 60% at 50% 0%,var(--deep),var(--night) 70%) fixed var(--night);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+#app{max-width:480px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;display:flex;flex-direction:column;gap:20px}
+h1{font-family:var(--display);font-weight:800;font-size:1.7rem;margin:0;letter-spacing:.04em;text-wrap:balance}
+h2{font-family:var(--display);font-size:1.15rem;margin:0}
+.sub{color:var(--dim);font-size:.85rem;margin:0}
+.stats{display:flex;gap:10px}
+.stat{flex:1;min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat small{font-size:.75rem;color:var(--dim);font-weight:400}
+.stat b{display:block;font-size:1.3rem;font-variant-numeric:tabular-nums;color:var(--moon)}
+.stat span{font-size:.75rem;color:var(--dim);letter-spacing:.08em}
+.bar{height:8px;background:var(--panel);border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--flame);transition:width .3s}
+.bar.timer i{background:var(--moon);width:100%;animation:drain 6s linear forwards}
+@keyframes drain{to{width:0}}
+.path{display:flex;flex-direction:column;gap:14px}
+.node{display:flex;align-items:center;gap:16px;text-align:left;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 0;color:inherit;font:inherit;cursor:pointer}
+.unit{display:flex;flex-direction:column;gap:8px}
+.unit:nth-child(even) .node{flex-direction:row-reverse;text-align:right}
+.unit:nth-child(even) .say{align-self:flex-end}
+.node[disabled]{opacity:.4;cursor:default}
+.node div{min-width:0;flex:1}
+.moon{flex:none;width:64px;height:64px;border-radius:50%;background:var(--moon);box-shadow:0 0 24px -4px var(--moon)}
+.m0{box-shadow:inset 44px 0 0 0 var(--deep),0 0 18px -6px var(--moon)}
+.m1{box-shadow:inset 26px 0 0 0 var(--deep),0 0 22px -5px var(--moon)}
+button{font:inherit}
+.btn{background:var(--flame);color:var(--flame-ink);border:0;border-radius:12px;padding:14px 18px;font-weight:700;font-size:1rem;cursor:pointer;width:100%}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn[disabled]{opacity:.4}
+button:focus-visible{outline:2px solid var(--moon);outline-offset:2px}
+.top{display:flex;align-items:center;gap:12px}
+.top .bar{flex:1}
+.x{background:none;border:0;color:var(--dim);font-size:1.4rem;cursor:pointer;padding:4px 8px}
+.kind{color:var(--flame);font-size:.8rem;letter-spacing:.1em;font-weight:700}
+.prompt{font-size:1.35rem;font-weight:700;margin:0;overflow-wrap:anywhere}
+.line{background:var(--panel);border:1px solid var(--line);border-radius:4px 16px 16px 16px;padding:12px 14px;margin:0;font-size:1.1rem}
+.say{display:inline-flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:8px 16px;cursor:pointer;width:auto;align-self:flex-start}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:14px;text-align:left;cursor:pointer}
+.opt.sel{border-color:var(--flame);background:var(--deep)}
+.slot{min-height:60px;border-bottom:2px solid var(--line);padding:8px 0}
+.tiles{display:flex;flex-wrap:wrap;gap:8px}
+.tile{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer}
+.fb{border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;border:1px solid}
+.fb.ok{border-color:var(--ok);color:var(--ok)} .fb.ng{border-color:var(--ng);color:var(--ng)}
+.fb p{margin:0;color:var(--ink)}
+.heard{color:var(--dim);font-size:.9rem;margin:0}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:140px}
+.row .btn{padding-inline:10px;font-size:.95rem}
+.big{font-family:var(--display);font-size:3rem;color:var(--moon);margin:0;font-variant-numeric:tabular-nums}
+#app{min-height:100%}
+.dock{display:flex;flex-direction:column;gap:8px;position:sticky;bottom:0;margin-top:auto;padding-block:16px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(to bottom,transparent,var(--night) 28%)}
+.left{color:var(--dim);font-size:.8rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tile{min-height:44px;font-size:1.05rem;transition:transform .08s}
+.slot{align-items:center}
+.slot .tile{border-color:var(--flame)}
+.slot:empty::before{content:"下の単語をタップして並べます";color:var(--dim);font-size:.85rem;align-self:center}
+.tile:active,.opt:active,.btn:active,.say:active,.cta:active,.node:active{transform:scale(.97)}
+.btn,.opt,.say,.cta{transition:transform .08s}
+.fb{animation:rise .22s ease-out}
+.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.x{min-width:44px;min-height:44px}
+.say{min-height:44px}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{flex:1;min-height:44px;background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--flame);color:var(--flame-ink);border-color:var(--flame);font-weight:700}
+.set{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:16px}
+textarea{box-sizing:border-box;resize:none;width:100%;min-height:84px;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:.8rem;overflow-wrap:anywhere}
+textarea:focus-visible{outline:2px solid var(--moon);outline-offset:2px}
+.intro{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:14px;padding-block:24px}
+.dots{display:flex;gap:8px}.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}.dots i.on{background:var(--moon)}
+.cta{display:flex;flex-direction:column;gap:2px;text-align:left;width:100%;background:linear-gradient(135deg,var(--panel),var(--deep));border:1px solid var(--flame);border-radius:16px;padding:18px;color:var(--ink);cursor:pointer;box-shadow:0 0 28px -12px var(--flame)}
+.cta b{font-family:var(--display);font-size:1.45rem;line-height:1.3}
+.cta .go{align-self:flex-end;color:var(--flame);font-weight:700;margin-top:4px}
+.tag{font-family:var(--body);font-size:.68rem;font-weight:700;color:var(--flame-ink);background:var(--flame);border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:middle;white-space:nowrap}
+.lock{flex-direction:row;align-items:center;gap:12px;opacity:.45;padding:4px 0}
+.lock h2{font-size:1rem}
+.moon.sm{width:26px;height:26px;box-shadow:inset 18px 0 0 0 var(--deep)}
+.opt.ok{border-color:var(--ok);color:var(--ok)}
+.opt.ng{border-color:var(--ng);color:var(--ng)}
+.done{text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;animation:rise .5s ease-out}
+.moon.big{width:112px;height:112px;margin-block:8px}
+.moon.big.m1{box-shadow:inset 44px 0 0 0 var(--deep),0 0 30px -6px var(--moon)}
+@keyframes rise{from{transform:translateY(14px);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// c: 話題がつながる3往復の台本 {sit:状況, t:[[相手のセリフ, 返事にするフレーズの番号]×3]}。無いユニットは r から3つ選ぶ
+// p: [phrase_id（変更しない）, 英語, 日本語, 場面]  r: [相手のセリフ, 返事にするフレーズの番号, 状況]  v: [phrase_id, 元フレーズの番号, 英語, 日本語]
+const UNITS=[
+ {t:"第一歩 出会い",d:"名乗る・あいさつする",p:[
+  ["p001","Nice to meet you.","はじめまして。"],["p002","What's your name?","お名前は何ですか？"],["p003","My name is Rei.","私の名前はレイです。"],["p004","Where are you from?","どこの出身ですか？"],
+  ["p005","I'm from Japan.","日本出身です。"],["p006","How are you today?","今日の調子はどうですか？"],["p007","I'm good, thank you.","元気です、ありがとう。"],["p008","Please say that again.","もう一度言ってください。"]],
+  r:[["What's your name?",2],["Where are you from?",4],["How are you today?",6],["I'm Tom. I'm from Leeds.",7,"聞き取れなかったので、もう一度お願いする"]],
+  c:{sit:"旅先で、となりの席の人に話しかけられる",t:[["Hi! I'm Tom. What's your name?",2],["Nice to meet you, Rei. Where are you from?",4],["Oh, Japan! I'd love to visit someday. Anyway, nice to meet you.",0]]},
+  v:[["v001",4,"I'm from Canada.","カナダ出身です。"],["v002",4,"I'm from Australia.","オーストラリア出身です。"]]},
+ {t:"第二歩 旅立ち",d:"道をたずねる・助けを求める",p:[
+  ["p009","Where is the station?","駅はどこですか？"],["p010","How much is this?","これはいくらですか？"],["p011","Can you help me?","助けてもらえますか？"],["p012","I'm looking for a map.","地図を探しています。"],
+  ["p013","See you tomorrow.","また明日。"],["p014","I don't understand.","わかりません。"],["p015","Turn left at the corner.","角を左に曲がってください。"],["p016","How long does it take?","時間はどのくらいかかりますか？","駅まで歩く時間をたずねる"]],
+  r:[["Do you need directions?",0,"駅を探している"],["You look lost. What do you need?",3],["I have to go now. See you tomorrow!",4]],
+  c:{sit:"知らない町で道に迷い、通りがかりの人に声をかけられる",t:[["Hello. Are you all right?",2],["Of course. What do you need?",0],["Go straight and turn left at the bank.",7]]},
+  v:[["v003",3,"I'm looking for a taxi.","タクシーを探しています。"],["v004",3,"I'm looking for my phone.","携帯電話を探しています。"]]},
+ {t:"第三歩 仲間",d:"好みを話す・意見を言う",p:[
+  ["p017","What do you like to do?","何をするのが好きですか？"],["p018","I like listening to music.","音楽を聴くのが好きです。"],["p019","Let's go together.","一緒に行きましょう。"],["p020","What do you think?","どう思いますか？"],
+  ["p021","That sounds great.","それはいいですね。","誘いや提案を聞いて"],["p022","I agree with you.","あなたに賛成です。"],["p023","Can I ask you a question?","質問してもいいですか？"],["p024","I'll do my best.","精いっぱい頑張ります。"]],
+  r:[["What do you like to do?",1],["Let's try the new cafe.",4],["I think we should leave early.",5]],
+  c:{sit:"新しくできた友人と、週末の話をする",t:[["What do you like to do on weekends?",1],["Me too! There is a free concert in the park on Saturday.",4],["I have two tickets. Do you want to come?",2]]},
+  v:[["v005",1,"I like cooking.","料理が好きです。"],["v006",1,"I like reading.","読書が好きです。"]]},
+ {t:"第四歩 食事",d:"注文する・感想を言う",p:[
+  ["p025","I'm so hungry.","とてもお腹がすきました。"],["p026","A table for two, please.","2名でお願いします。"],["p027","Can I see the menu?","メニューを見せてもらえますか？"],["p028","What do you recommend?","おすすめは何ですか？"],
+  ["p029","I'll have this one.","これにします。","メニューを指さして注文する"],["p030","Can I have some water?","お水をもらえますか？"],["p031","It was delicious.","おいしかったです。","食事の感想を聞かれて"],["p032","Can I have the check?","お会計をお願いします。"]],
+  r:[["Welcome. How many people?",1],["Are you ready to order?",4,"注文するものを決めた"],["How was your meal?",6]],
+  c:{sit:"友人と2人でレストランに入る",t:[["Good evening. How many people?",1],["This way, please. Here is your table.",2],["Here you are. Our pasta is very popular.",4]]},
+  v:[["v007",1,"A table for three, please.","3名でお願いします。"],["v008",1,"A table for four, please.","4名でお願いします。"]]},
+ {t:"第五歩 買い物",d:"探す・試す・支払う",p:[
+  ["p033","I'm just looking.","見ているだけです。"],["p034","Do you have a smaller size?","もっと小さいサイズはありますか？"],["p035","Can I try this on?","試着してもいいですか？"],["p036","I'll take it.","これをください。","試着した服を買うと決めて"],
+  ["p037","It's too expensive.","高すぎます。","店で値段を見て"],["p038","Can I pay by card?","カードで払えますか？"],["p039","Do you have another color?","別の色はありますか？"],["p040","I don't need a bag.","袋はいりません。"]],
+  r:[["Hello. May I help you?",0],["It looks good on you. Would you like to buy it?",3],["Would you like a bag?",7,"袋はいらない"]],
+  c:{sit:"服の店で、気になるシャツを見つけた",t:[["Hello. That shirt is new this week.",2],["Sure, the fitting room is over there. How does it fit?",1],["Here is a smaller one. It looks good on you.",3]]},
+  v:[["v009",1,"Do you have a larger size?","もっと大きいサイズはありますか？"]]},
+ {t:"第六歩 約束",d:"時間と予定を話す",p:[
+  ["p041","What time is it now?","今何時ですか？"],["p042","It's seven thirty.","7時半です。"],["p043","Are you free tomorrow?","明日は空いていますか？"],["p044","I'm busy this week.","今週は忙しいです。"],
+  ["p045","Let's meet at noon.","正午に会いましょう。"],["p046","I'm running late.","予定より遅れています。","待ち合わせに向かう途中で連絡する"],["p047","What are your plans today?","今日の予定は何ですか？"],["p048","I have a meeting.","会議があります。"]],
+  r:[["What time is it now?",1],["Can we meet this week?",3],["When should we meet?",4]],
+  v:[["v010",4,"Let's meet at three.","3時に会いましょう。"],["v011",4,"Let's meet at seven thirty.","7時半に会いましょう。"]]},
+ {t:"第七歩 心",d:"気持ちを伝える",p:[
+  ["p049","I'm so happy.","とてもうれしいです。"],["p050","I'm a little tired.","少し疲れています。"],["p051","Don't worry about it.","気にしないで。","相手に謝られて"],["p052","I'm sorry I'm late.","遅れてごめんなさい。"],
+  ["p053","That's too bad.","それは残念ですね。","相手の悪い知らせを聞いて"],["p054","I'm proud of you.","あなたを誇りに思います。","親しい相手の努力や成果に"],["p055","I was so surprised.","とても驚きました。"],["p056","Thank you for your help.","手伝ってくれてありがとう。"]],
+  r:[["I'm sorry, I broke your cup.",2],["I failed the test.",4],["I passed the exam!",5,"勉強を応援していた親しい相手に"]],
+  v:[["v012",7,"Thank you for your time.","お時間をいただき、ありがとうございます。"]]},
+ {t:"第八歩 窮地",d:"困ったときに切り抜ける",p:[
+  ["p057","I need some help.","助けが必要です。"],["p058","I lost my phone.","携帯電話をなくしました。"],["p059","I don't feel well.","体調がよくありません。"],["p060","Where is the restroom?","トイレはどこですか？"],
+  ["p061","Can you speak more slowly?","もっとゆっくり話してくれますか？"],["p062","What does this mean?","これはどういう意味ですか？","看板や単語を指さして"],["p063","Could you write it down?","書いてもらえますか？","聞き取れなかった言葉を"],["p064","Is there a hospital nearby?","近くに病院はありますか？"]],
+  r:[["Are you okay? You look pale.",2],["You look upset. What happened?",1],["Would you like me to say it again?",4,"速くて聞き取れなかった"]],
+  v:[["v013",1,"I lost my wallet.","財布をなくしました。"]]},
+ {t:"第九歩 記憶",d:"過去のことを話す",p:[
+  ["p065","What did you do yesterday?","昨日は何をしましたか？"],["p066","I went to the park.","公園に行きました。"],["p067","I stayed at home.","家にいました。"],["p068","How was your weekend?","週末はどうでしたか？"],
+  ["p069","It was really fun.","とても楽しかったです。","週末のことを聞かれて"],["p070","I watched a movie.","映画を見ました。"],["p071","Have you been to Tokyo?","東京に行ったことはありますか？"],["p072","I've never been there.","そこには行ったことがありません。","東京に行ったか聞かれて"]],
+  r:[["How was your weekend?",4],["Have you been to London?",7],["What did you do last night?",5]],
+  v:[["v014",1,"I went to the beach.","ビーチに行きました。"],["v015",1,"I went to the station.","駅に行きました。"],["v016",5,"I watched a video.","動画を見ました。"],["v017",5,"I watched TV.","テレビを見ました。"]]},
+ {t:"第十歩 未来",d:"これからのことを話す",p:[
+  ["p073","What do you want to do?","何がしたいですか？"],["p074","I want to travel abroad.","海外旅行がしたいです。"],["p075","I'm going to study tonight.","今夜は勉強するつもりです。"],["p076","I hope to see you again.","また会えるといいですね。"],
+  ["p077","I'll call you later.","あとで電話します。"],["p078","Let's keep in touch.","連絡を取り合いましょう。"],["p079","I'm looking forward to it.","楽しみにしています。","週末のパーティーについて"],["p080","I won't give up.","あきらめません。"]],
+  r:[["What are you doing tonight?",2],["See you at the party on Saturday.",6],["This is really hard. Do you want to stop?",7]],
+  v:[["v018",2,"I'm going to cook tonight.","今夜は料理するつもりです。"],["v019",2,"I'm going to work tonight.","今夜は仕事をするつもりです。"]]},
+ {t:"第十一歩 連絡",d:"電話とメッセージでやりとりする",p:[
+  ["p081","Can you hear me?","聞こえますか？"],["p082","I'll text you later.","あとでメッセージを送ります。"],["p083","What's your phone number?","電話番号は何ですか？"],["p084","Just a moment, please.","少々お待ちください。"],
+  ["p085","I'm on my way.","今向かっています。"],["p086","I'll be there in ten minutes.","10分で着きます。","待ち合わせの相手に連絡する"],["p087","Sorry, I missed your call.","ごめんなさい、電話に出られませんでした。"],["p088","Can I call you back?","かけ直してもいいですか？"]],
+  r:[["Where are you now?",4],["When will you get here?",5],["Hello? Is this a good time?",7,"今は手が離せない"]],
+  v:[["v020",5,"I'll be there in five minutes.","5分で着きます。"],["v021",5,"I'll be there in an hour.","1時間で着きます。"]]},
+ {t:"第十二歩 空",d:"天気と毎日の習慣を話す",p:[
+  ["p089","How's the weather today?","今日の天気はどうですか？"],["p090","It's sunny today.","今日は晴れです。"],["p091","It's going to rain.","雨が降りそうです。"],["p092","It's cold outside.","外は寒いです。"],
+  ["p093","I get up at seven.","7時に起きます。"],["p094","I usually walk to work.","普段は歩いて仕事に行きます。"],["p095","I go to bed early.","早く寝ます。"],["p096","I need an umbrella.","傘が必要です。"]],
+  r:[["How's the weather today?",1],["What time do you get up?",4],["How do you get to work?",5]],
+  v:[["v022",1,"It's cloudy today.","今日は曇りです。"],["v023",4,"I get up at six.","6時に起きます。"]]},
+ {t:"第十三歩 絆",d:"家族や友人を紹介する",p:[
+  ["p097","Do you have any brothers or sisters?","兄弟や姉妹はいますか？"],["p098","I have a younger sister.","妹がいます。"],["p099","This is my friend.","こちらは私の友達です。"],["p100","What does he do?","彼の仕事は何ですか？"],
+  ["p101","He is a teacher.","彼は先生です。"],["p102","She is very kind.","彼女はとても親切です。"],["p103","We met at school.","私たちは学校で出会いました。"],["p104","I live with my family.","家族と一緒に住んでいます。"]],
+  r:[["Do you have any brothers or sisters?",1],["What does he do?",4],["How did you two meet?",6]],
+  v:[["v024",1,"I have an older brother.","兄がいます。"],["v025",4,"He is a doctor.","彼は医者です。"]]},
+ {t:"第十四歩 道",d:"乗り物で移動する",p:[
+  ["p105","One ticket to Kyoto, please.","京都まで1枚お願いします。"],["p106","Which train should I take?","どの電車に乗ればいいですか？"],["p107","Does this bus go to the airport?","このバスは空港に行きますか？"],["p108","Where should I get off?","どこで降りればいいですか？"],
+  ["p109","Is this seat taken?","この席は誰か使っていますか？"],["p110","How far is it from here?","ここからどのくらい遠いですか？","目的地までの距離をたずねる"],["p111","Please take me to this address.","この住所までお願いします。","タクシーで住所を見せながら"],["p112","Keep the change.","おつりは結構です。"]],
+  r:[["Hello. Where to?",6,"タクシーで住所を見せながら"],["Here is your change.",7,"おつりは受け取らない"],["Next, please. Can I help you?",0,"駅の窓口で京都行きを1枚買う"]],
+  v:[["v026",0,"One ticket to Osaka, please.","大阪まで1枚お願いします。"],["v027",0,"Two tickets to Kyoto, please.","京都まで2枚お願いします。"]]},
+ {t:"第十五歩 頼み",d:"お願いする・許可をもらう",p:[
+  ["p113","Could you do me a favor?","お願いがあるのですが。"],["p114","Can I sit here?","ここに座ってもいいですか？"],["p115","May I use your pen?","ペンを借りてもいいですか？"],["p116","Could you take a picture of us?","私たちの写真を撮ってもらえますか？"],
+  ["p117","Sure, no problem.","もちろん、いいですよ。"],["p118","I'm sorry, I can't.","すみません、できません。"],["p119","Please wait here.","ここで待っていてください。"],["p120","Thank you so much.","本当にありがとうございます。"]],
+  r:[["Could you do me a favor?",4,"快く引き受ける"],["Here you are. I took three pictures.",7],["Can you work this Sunday?",5,"日曜は予定があって無理"]],
+  v:[["v028",1,"Can I park here?","ここに駐車してもいいですか？"],["v029",2,"May I use your phone?","電話を借りてもいいですか？"]]},
+ {t:"第十六歩 宿",d:"ホテルで過ごす",p:[
+  ["p121","I have a reservation.","予約しています。"],["p122","I'd like to check in.","チェックインをお願いします。"],["p123","What time is breakfast?","朝食は何時ですか？"],["p124","Is there free Wi-Fi?","無料のWi-Fiはありますか？"],
+  ["p125","The air conditioner doesn't work.","エアコンが動きません。"],["p126","Could I have another towel?","タオルをもう1枚もらえますか？"],["p127","I'd like to check out.","チェックアウトをお願いします。"],["p128","Can you keep my luggage?","荷物を預かってもらえますか？"]],
+  r:[["Good evening. How can I help you?",1,"ホテルに着いたところ"],["Do you have a reservation?",0],["Is everything okay with your room?",4,"部屋のエアコンが動かない"]],
+  v:[["v030",5,"Could I have another pillow?","枕をもう1つもらえますか？"],["v031",2,"What time is dinner?","夕食は何時ですか？"]]},
+ {t:"第十七歩 体",d:"体調を伝える・薬局で話す",p:[
+  ["p129","I have a headache.","頭が痛いです。"],["p130","I have a fever.","熱があります。"],["p131","I caught a cold.","風邪をひきました。"],["p132","My stomach hurts.","お腹が痛いです。"],
+  ["p133","Do you have any medicine for this?","これに効く薬はありますか？","薬局で症状を伝えたあとに"],["p134","How often should I take it?","どのくらいの頻度で飲めばいいですか？","薬の飲み方をたずねる"],["p135","I need to see a doctor.","医者に診てもらう必要があります。"],["p136","I feel much better now.","だいぶ良くなりました。"]],
+  r:[["You don't look well. What's the matter?",0,"頭が痛い"],["How are you feeling today?",7,"昨日より良くなった"],["Here is your medicine.",5,"飲み方を知りたい"]],
+  v:[["v032",0,"I have a toothache.","歯が痛いです。"],["v033",3,"My back hurts.","背中が痛いです。"]]},
+ {t:"第十八歩 務め",d:"仕事について話す",p:[
+  ["p137","What do you do?","お仕事は何ですか？"],["p138","I work at a hospital.","病院で働いています。"],["p139","I'm an office worker.","会社員です。"],["p140","I have a lot of work today.","今日は仕事がたくさんあります。"],
+  ["p141","Can we talk later?","あとで話せますか？"],["p142","I'll send you an email.","メールを送ります。"],["p143","Let me check my schedule.","予定を確認させてください。"],["p144","I'm off tomorrow.","明日は休みです。"]],
+  r:[["What do you do?",2],["Are you free on Friday?",6,"予定を見ないと分からない"],["Do you work tomorrow?",7]],
+  v:[["v034",1,"I work at a bank.","銀行で働いています。"],["v035",1,"I work at a school.","学校で働いています。"]]},
+ {t:"第十九歩 楽しみ",d:"趣味と週末を話す",p:[
+  ["p145","What do you do in your free time?","暇なときは何をしますか？"],["p146","I enjoy taking pictures.","写真を撮るのが好きです。"],["p147","I'm into cooking these days.","最近は料理にはまっています。"],["p148","Do you play any sports?","何かスポーツをしますか？"],
+  ["p149","I play tennis on weekends.","週末にテニスをします。"],["p150","I've never tried it.","やったことがありません。","スキーをするか聞かれて"],["p151","Would you like to join us?","一緒にどうですか？"],["p152","I'd love to.","ぜひ。","誘いを喜んで受ける"]],
+  r:[["What do you do in your free time?",1],["Do you play any sports?",4],["We're going hiking on Sunday. Would you like to join us?",7]],
+  v:[["v036",4,"I play soccer on weekends.","週末にサッカーをします。"],["v037",1,"I enjoy watching movies.","映画を見るのが好きです。"]]},
+ {t:"第二十歩 再会",d:"別れのあいさつ・久しぶりに会う",p:[
+  ["p153","It was nice talking to you.","お話しできてよかったです。"],["p154","I have to go now.","もう行かなければなりません。"],["p155","Take care of yourself.","体に気をつけて。"],["p156","Have a nice day.","よい一日を。"],
+  ["p157","Long time no see.","久しぶりです。"],["p158","How have you been?","元気にしていましたか？"],["p159","I've been busy, but I'm fine.","忙しかったけれど、元気です。"],["p160","Say hello to your family.","ご家族によろしく伝えてください。"]],
+  r:[["Long time no see! How have you been?",6],["Oh, it's already five o'clock.",1,"もう帰る時間"],["Thank you for coming today. Goodbye!",3]],
+  v:[["v038",3,"Have a nice weekend.","よい週末を。"],["v039",3,"Have a nice trip.","よい旅を。"]]}
+];
+const slug=en=>en.toLowerCase().replace(/[^a-z ]/g,"").trim();
+const ALL=UNITS.flatMap((u,i)=>u.p.map((p,j)=>({id:p[0],u:i,j,en:p[1],ja:p[2],note:p[3]})));
+const VARS=UNITS.flatMap((u,i)=>(u.v||[]).map(v=>({id:v[0],u:i,en:v[2],ja:v[3],base:u.p[v[1]][1]})));
+const KIND={meaning:"意味を選ぶ",build:"英語に組み立てる",listen:"聞き取る",speak:"声に出す",reply:"会話で返事をする",flash:"英語で口に出す"};
+const GOAL=50, KEY="moonstep-english-v1", GAP=[1,3,7,14,30];
+const day=n=>new Date(Date.now()+n*864e5-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+let S={xp:0,streak:0,last:"",done:{},rev:{},day:"",dayXp:0};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){}
+delete S.weak;S.talk=S.talk||{};
+{ // 旧版の記録：英文キーは同じフレーズのIDへ移し、位置キーは別フレーズに引き継がせず破棄して知らせる
+  const M={},IDS=new Set();ALL.concat(VARS).forEach(a=>{M[slug(a.en)]=a.id;IDS.add(a.id)});
+  Object.keys(S.rev).forEach(k=>{if(IDS.has(k))return;if(M[k]&&!S.rev[M[k]])S.rev[M[k]]=S.rev[k];else if(!M[k])S.notice=1;delete S.rev[k]});
+}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const roll=()=>{if(S.day!==day(0)){S.day=day(0);S.dayXp=0}};roll();
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const norm=s=>s.toLowerCase().replace(/[^a-z' ]/g,"").replace(/\s+/g," ").trim();
+const words=en=>en.replace(/[.?!,]/g,"").split(" ").map((w,i)=>i===0&&!/^I('|$)/.test(w)?w.toLowerCase():w);
+const due=()=>ALL.concat(VARS).filter(a=>S.rev[a.id]&&S.rev[a.id].due<=day(0));
+const app=document.getElementById("app");
+let L=null, timer=0;
+
+function speak(t){if(recState==="rec"||recState==="pending")return;try{player.pause();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=S.rate==="slow"?.7:.9;speechSynthesis.speak(u)}catch(e){}}
+
+const goal=()=>[30,50,100].includes(S.goal)?S.goal:GOAL;
+function home(){
+  clearTimeout(timer);recClear();L=null;roll();
+  const pct=Math.min(100,S.dayXp/goal()*100),nDue=due().length,kept=Object.values(S.rev).filter(r=>r.step>0).length;
+  const notice=S.notice?`<p class="fb ng">教材更新に伴い学習記録をリセットしました。XP・連続日数は保持しています。</p>`:"";if(S.notice){delete S.notice;save()}
+  const next=UNITS.findIndex((u,i)=>!S.done[i]); // 次に進むユニット（順番に解放）
+  const cont=next>=0?`<button class="${nDue?"btn ghost":"cta"}" data-unit="${next}">${nDue?`${next?"つづきから":"はじめる"}：${UNITS[next].t}`:`<span class="sub">${next?"つづきから":"はじめる"}</span><b>${UNITS[next].t}</b><span class="sub">${UNITS[next].d}。約3分</span><span class="go">はじめる →</span>`}</button>`:"";
+  const cta=nDue?`<button class="cta" data-review><span class="sub">まずはここから</span><b>今日の復習 ${nDue}件</b><span class="sub">別の日でも口で言えるかを確かめます</span><span class="go">復習する →</span></button>${cont}`
+    :cont||`<button class="cta" data-flash><span class="sub">すべての歩みをクリア</span><b>6秒チャレンジ</b><span class="sub">学んだフレーズを10本、すばやく口に出す</span><span class="go">挑戦する →</span></button>`;
+  app.innerHTML=`${notice}<header class="hd"><div><h1>Moonstep English</h1><p class="sub">月の歩みで、話せる英語へ。</p></div><button class="say" data-settings>設定</button></header>
+  ${cta}
+  <div class="stats"><div class="stat"><b>${S.streak}</b><span>連続日数</span></div><div class="stat"><b>${kept}</b><span>別日に言えた（自己判定）</span></div><div class="stat"><b>${Math.min(S.dayXp,goal())}<small> / ${goal()}</small></b><span>今日のXP</span></div></div>
+  <div class="bar" role="progressbar" aria-label="今日の目標" aria-valuenow="${Math.round(pct)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+  <div class="row"><button class="btn ghost" data-flash>6秒チャレンジ</button><button class="btn ghost" data-book>フレーズ帳（${Object.keys(S.rev).length}文）</button></div>
+  <div class="path">${UNITS.map((u,i)=>{const n=S.done[i]||0,open=i===0||S.done[i-1];
+    if(!open)return `<div class="unit lock"><span class="moon sm"></span><h2>${u.t}</h2></div>`;
+    return `<div class="unit"><button class="node" data-unit="${i}"><span class="moon m${Math.min(n,2)}"></span><div><h2>${u.t}${i===next?`<span class="tag">いまここ</span>`:""}</h2><p class="sub">${u.d}<br>${n?`クリア ${n}回`:"未挑戦"}</p></div></button>${n?`<button class="say" data-talk="${i}">3往復の会話に挑戦${S.talk[i]?`（${S.talk[i]}回）`:""}</button>`:""}</div>`}).join("")}</div>`;
+}
+
+const BLANK=()=>({xp:0,streak:0,last:"",done:{},rev:{},day:"",dayXp:0,talk:{}});
+const PAGES=[
+  ["月の歩みで、話せる英語へ","1レッスンは約3分。聞いて、組み立てて、声に出します。全20の歩みで、場面ごとの言い方を身につけます。"],
+  ["口に出すのが、いちばんの近道","答えを見る前に英語を声に出し、言えたかどうかを自分で判定します。学んだ文は日をあけて復習に戻ってきます。"],
+  ["録音は任意です","自分の声を録って聞き直せます。マイクを許可しなくても、すべての学習ができます。録音はこの端末の中だけで扱い、どこにも送りません。"]];
+function intro(n){
+  L=null;const last=n===PAGES.length-1;
+  app.innerHTML=`<div class="intro"><span class="moon big ${["m0","m1",""][n]}"></span><h1>${PAGES[n][0]}</h1><p>${PAGES[n][1]}</p><div class="dots">${PAGES.map((_,k)=>`<i class="${k===n?"on":""}"></i>`).join("")}</div></div>
+  <div class="dock"><button class="btn" ${last?"data-introdone":`data-intro="${n+1}"`}>${last?"はじめる":"次へ"}</button>${last?"":`<button class="btn ghost" data-introdone>案内をとばす</button>`}</div>`;
+}
+let setMsg="",setErr="",askReset=false;
+const exportCode=()=>{try{return btoa(unescape(encodeURIComponent(JSON.stringify(S))))}catch(e){return ""}};
+function importCode(code){ // 文字列から学習記録を読み込む。形が違うものは受け付けない
+  try{
+    const o=JSON.parse(decodeURIComponent(escape(atob(code.trim()))));
+    if(!o||typeof o!=="object"||Array.isArray(o)||!o.rev||typeof o.rev!=="object"||!o.done||typeof o.done!=="object")throw 0;
+    const ids=new Set(ALL.concat(VARS).map(a=>a.id)),n=BLANK();
+    n.xp=Math.max(0,+o.xp||0);n.streak=Math.max(0,+o.streak||0);n.last=typeof o.last==="string"?o.last:"";
+    UNITS.forEach((u,i)=>{if(+o.done[i]>0)n.done[i]=+o.done[i];if(o.talk&&+o.talk[i]>0)n.talk[i]=+o.talk[i]});
+    Object.keys(o.rev).forEach(k=>{const r=o.rev[k];if(ids.has(k)&&r&&/^\d{4}-\d\d-\d\d$/.test(r.due))n.rev[k]={step:Math.min(4,Math.max(0,+r.step||0)),due:r.due}});
+    if(o.rate==="slow"||o.rate==="norm")n.rate=o.rate;if(typeof o.sfx==="boolean")n.sfx=o.sfx;if([30,50,100].includes(o.goal))n.goal=o.goal;n.seen=1;
+    S=n;roll();save();return true;
+  }catch(e){return false}
+}
+function settings(){
+  clearTimeout(timer);recClear();L=null;
+  const seg=(key,opts)=>`<div class="seg">${opts.map(([v,label])=>`<button data-set="${key}:${v}" aria-pressed="${String(S[key]===v)}">${label}</button>`).join("")}</div>`;
+  if(!["slow","norm"].includes(S.rate))S.rate="norm";if(S.sfx!==false)S.sfx=true;S.goal=goal();
+  app.innerHTML=`<div class="top"><button class="x" data-home aria-label="もどる">×</button><h1>設定</h1></div>
+  ${setMsg?`<p class="fb ok">${setMsg}</p>`:""}
+  <div class="set"><h2>読み上げの速さ</h2>${seg("rate",[["slow","ゆっくり"],["norm","ふつう"]])}<button class="say" data-hearsample>▶ 試しに聞く</button></div>
+  <div class="set"><h2>正誤の効果音</h2>${seg("sfx",[[true,"鳴らす"],[false,"鳴らさない"]])}</div>
+  <div class="set"><h2>1日の目標</h2>${seg("goal",[[30,"30 XP"],[50,"50 XP"],[100,"100 XP"]])}<p class="sub">1レッスンでおよそ60〜90 XPです。</p></div>
+  <div class="set"><h2>学習記録を書き出す</h2><p class="sub">下の文字列をコピーして保管すると、別の端末や機種変更のあとで読み込めます。</p><textarea id="exp" readonly aria-label="書き出し用の文字列">${exportCode()}</textarea><button class="btn ghost" data-copy>コピーする</button></div>
+  <div class="set"><h2>学習記録を読み込む</h2><p class="sub">書き出した文字列を貼り付けます。いまの記録は置き換わります。</p><textarea id="imp" aria-label="読み込む文字列" placeholder="ここに貼り付け"></textarea>${setErr?`<p class="fb ng">${setErr}</p>`:""}<button class="btn ghost" data-import>読み込む</button></div>
+  <div class="set"><h2>はじめの案内</h2><button class="btn ghost" data-intro="0">もう一度見る</button></div>
+  <div class="set"><h2>学習記録を消す</h2>${askReset?`<p class="fb ng">すべての学習記録が消えます。元に戻せません。</p><div class="row"><button class="btn ghost" data-resetyes>消す</button><button class="btn" data-resetno>やめる</button></div>`:`<button class="btn ghost" data-reset>記録をリセットする</button>`}</div>`;
+  setMsg="";setErr="";
+}
+function book(){
+  clearTimeout(timer);recClear();L=null;
+  const rows=UNITS.map((u,i)=>{const ps=ALL.concat(VARS).filter(a=>a.u===i&&S.rev[a.id]);
+    return ps.length?`<h2>${u.t}</h2>`+ps.map(a=>`<button class="opt" data-hear="${a.id}">${a.en}<br><span class="sub">${a.ja}　${S.rev[a.id].step>0?"別日に言えた":"学習中"}</span></button>`).join(""):""}).join("");
+  app.innerHTML=`<div class="top"><button class="x" data-home aria-label="もどる">×</button><h1>フレーズ帳</h1></div><p class="sub">タップすると音声が流れます。学んだフレーズはすべて復習に戻り、正解に応じて次の復習までの間隔を1・3・7・14・30日へ延ばします。</p>
+  <div class="opts">${rows||`<p class="sub">まだ学んだフレーズがありません。最初の歩みから始めましょう。</p>`}</div>`;
+}
+function start(mode,unit){
+  let q;
+  if(mode==="unit"){
+    const rs=shuffle(UNITS[unit].r).slice(0,2),ph=shuffle(ALL.filter(a=>a.u===unit&&!rs.some(r=>r[1]===a.j)));let pi=0,ri=0; // 会話2文＋残り6文＝8文を一度ずつ
+    q=["meaning","listen","build","reply","speak","flash","reply","flash"].map(t=>t==="reply"?{p:ALL.find(a=>a.u===unit&&a.j===rs[ri][1]),sit:rs[ri][2],line:rs[ri++][0],type:t}:{p:ph[pi++],type:t});
+    const vs=shuffle(VARS.filter(v=>v.u===unit));if(vs[0])q.push({p:vs[0],type:"flash"});
+  }else if(mode==="talk"){ // 日本語なしで、相手の英語を聞いて口で返す、を3回つなぐ
+    const c=UNITS[unit].c;
+    q=c?c.t.map((t,k)=>({p:ALL.find(a=>a.u===unit&&a.j===t[1]),type:"flash",line:t[0],sit:c.sit,hear:true,turn:k+1})) // 台本あり：順番どおりに話がつながる
+      :shuffle(UNITS[unit].r).slice(0,3).map(r=>({p:ALL.find(a=>a.u===unit&&a.j===r[1]),type:"flash",line:r[0],sit:r[2],hear:true}));
+  }else if(mode==="review"){
+    q=shuffle(due()).slice(0,10).map((p,i)=>{const r=i%2?null:UNITS[p.u].r.find(r=>r[1]===p.j);return r?{p,type:"flash",line:r[0],sit:r[2],hear:true}:{p,type:"flash"}});
+  }else{
+    const pool=ALL.filter(a=>S.done[a.u]);
+    q=shuffle(pool.length?pool:ALL.filter(a=>a.u===0)).slice(0,10).map(p=>({p,type:"flash"}));
+  }
+  q.forEach(x=>x.timed=mode==="flash");
+  L={mode,unit,q,i:0,right:0,total:0};show();
+}
+function setup(q){
+  q.done=false;q.pick=[];q.sel=null;q.heard="";q.open=false;
+  const others=f=>shuffle(ALL.filter(a=>a.id!==q.p.id&&f(a))).slice(0,2);
+  if(q.type==="meaning")q.opts=shuffle([q.p,...others(()=>true)]);
+  if(q.type==="reply")q.opts=shuffle([q.p,...others(a=>a.u===q.p.u)]);
+  if(q.type==="build"||q.type==="listen")q.tiles=shuffle([...words(q.p.en),...others(()=>true).map(a=>words(a.en)[1])]);
+}
+function show(){
+  clearTimeout(timer);recClear();
+  const q=L.q[L.i]; if(!q)return result();
+  setup(q);
+  if(q.type==="reply")speak(q.line);
+  else if(q.type==="flash"){if(q.hear)speak(q.line);if(q.timed)timer=setTimeout(reveal,6000)}
+  else if(q.type!=="build")speak(q.p.en);
+  draw();
+}
+function reveal(){
+  clearTimeout(timer);const q=L&&L.q[L.i];if(!q||q.type!=="flash"||q.open)return;
+  recCancelPending();recStop(true); // 答えを見る前の発話だけを保存して止める。許可待ちは取り消す
+  q.open=true;speak(q.p.en);draw(); // 録音の停止完了前は読み上げず、音声ボタンで聞く
+}
+function draw(){
+  const q=L.q[L.i],p=q.p;let body="";
+  const audio=`<button class="say" data-say>▶ 音声を聞く</button>`;
+  const self=`<div class="row"><button class="btn ghost" data-self="1">${q.type==="flash"?"見る前に言えた":"声に出して言えた"}</button><button class="btn ghost" data-self="0">まだ難しい</button></div><p class="sub">模範文と違っても、同じ意味で自然に言えたら「言えた」でかまいません。</p>`;
+  const sit=q.sit?`<p class="sub">状況：${q.sit}</p>`:"",ja=p.ja+(p.note?`<br><span class="sub">（${p.note}）</span>`:"")+(p.base?`<br><span class="sub">もとの型：${p.base}</span>`:"");
+  const opts=k=>`<div class="opts">${q.opts.map((o,n)=>`<button class="opt ${q.done?(o.id===p.id?"ok":q.sel===n?"ng":""):q.sel===n?"sel":""}" data-opt="${n}">${o[k]}</button>`).join("")}</div>`;
+  if(q.type==="meaning")body=`<p class="prompt">${p.en}</p>${audio}${opts("ja")}`;
+  if(q.type==="reply")body=`${sit}<p class="sub">相手</p><p class="line">${q.line}</p>${audio}<p class="sub">あなたの返事を選ぶ</p>${opts("en")}`;
+  if(q.type==="build"||q.type==="listen")body=`${q.type==="build"?`<p class="prompt">${ja}</p>`:audio}
+    <div class="slot tiles">${q.pick.map((k,n)=>`<button class="tile" data-un="${n}">${q.tiles[k]}</button>`).join("")}</div>
+    <div class="tiles">${q.tiles.map((w,k)=>q.pick.includes(k)?"":`<button class="tile" data-tile="${k}">${w}</button>`).join("")}</div>`;
+  if(q.type==="speak")body=`<p class="sub">${p.ja}</p><p class="prompt">${p.en}</p>${audio}
+    ${q.done?"":recUI()}`;
+  if(q.type==="flash")body=(q.hear?(q.open?`<p class="sub">相手</p><p class="line">${q.line}</p>`:`${sit}<p class="sub">相手の英語を聞いて、英語で返事をします。</p>${audio}`):`<p class="prompt">${ja}</p>`)+(q.open
+    ?`<p class="prompt">${p.en}</p>${q.hear?`<p class="sub">${p.ja}（返事の一例）</p>`:""}${audio}${q.done?"":recUI()}`
+    :`${q.timed?`<div class="bar timer"><i></i></div>`:""}<p class="sub">${q.timed?"6秒以内に":"時間は気にせず、"}${q.hear?"声に出してから答えを見ます。":"英語で声に出してから答えを見ます。"}</p>${recUI()}`);
+  let foot="";
+  if(q.done)foot=`<div class="fb ${q.ok?"ok":"ng"}"><b>${q.ok?"正解 +10 XP":"おしい。明日もう一度確認します"}</b><p>${p.en}<br><span class="sub">${p.ja}</span></p><button class="btn" data-next>次へ</button></div>`;
+  else if(q.opts||q.tiles)foot=`<button class="btn" data-check ${(q.opts?q.sel===null:!q.pick.length)?"disabled":""}>答え合わせ</button>`;
+  else if(q.type==="flash"&&!q.open)foot=`<button class="btn" data-reveal>答えを見る</button>`;
+  else foot=self; // 声に出す問題・答えを開いた後は、自己判定を親指の届く下部に置く
+  app.innerHTML=`<div class="top"><button class="x" data-quit aria-label="やめる">×</button><div class="bar"><i style="width:${L.i/L.q.length*100}%"></i></div><span class="left">あと${L.q.length-L.i}問</span></div>
+  <span class="kind">${L.mode==="talk"?(q.turn&&!q.retry?`つながる会話 ${q.turn} / 3`:"3往復の会話　聞いて返す"):q.hear?"聞いて返す":p.base?"型を見ながら入れ替えて言う（補助練習）":KIND[q.type]}</span>${body}${foot?`<div class="dock">${foot}</div>`:""}`;
+}
+let ac=null;
+function sfx(ok){ // 正誤の短い効果音。タップ操作のあとだけ鳴る。S.sfx===false で消音
+  if(S.sfx===false)return;
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();
+    (ok?[[660,0],[880,.09]]:[[220,0]]).forEach(([f,t])=>{const o=ac.createOscillator(),g=ac.createGain(),t0=ac.currentTime+t;
+      o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(.12,t0+.02);g.gain.exponentialRampToValueAtTime(.0001,t0+.18);
+      o.connect(g);g.connect(ac.destination);o.start(t0);o.stop(t0+.2)});
+  }catch(e){}
+}
+function grade(ok){
+  const q=L.q[L.i],id=q.p.id,r=S.rev[id];recClear();roll();sfx(ok);q.done=true;q.ok=ok;L.total++;
+  if(ok){L.right++;S.xp+=10;S.dayXp+=10;
+    if(!r)S.rev[id]={step:0,due:day(1)};
+    else if(L.mode==="review"&&!q.retry){r.step=Math.min(r.step+1,4);r.due=day(GAP[r.step])}
+    if(q.type==="reply")speak(q.p.en);
+  }else{(L.miss=L.miss||new Set()).add(id);S.rev[id]={step:0,due:day(1)};if(!q.retry)L.q.push({...q,retry:true})}
+  save();draw();
+}
+function result(){
+  if(S.last!==day(0)){S.streak=S.last===day(-1)?S.streak+1:1;S.last=day(0)}
+  if(L.mode==="unit")S.done[L.unit]=(S.done[L.unit]||0)+1;
+  if(L.mode==="talk")S.talk[L.unit]=(S.talk[L.unit]||0)+1;
+  save();
+  const first=L.q.filter(x=>!x.retry).length,miss=[...(L.miss||[])].map(id=>ALL.concat(VARS).find(a=>a.id===id)).filter(Boolean);
+  const nx=L.mode==="unit"&&UNITS[L.unit+1]?L.unit+1:-1;
+  app.innerHTML=`<header class="done"><span class="moon big ${miss.length?"m1":""}"></span><h1>${L.mode==="talk"?"会話が、つながった。":miss.length?"一歩、進んだ。":"満ちた一歩。"}</h1><p class="sub">${first-miss.length} / ${first} 問を一度で通過</p></header>
+  <div class="stats"><div class="stat"><b>+${L.right*10}</b><span>獲得XP</span></div><div class="stat"><b>${S.streak}</b><span>連続日数</span></div></div>
+  ${miss.length?`<h2>明日もう一度確認する文</h2><div class="opts">${miss.map(a=>`<button class="opt" data-hear="${a.id}">${a.en}<br><span class="sub">${a.ja}</span></button>`).join("")}</div>`:""}
+  ${nx>=0?`<button class="btn" data-unit="${nx}">次の歩みへ：${UNITS[nx].t}</button><button class="btn ghost" data-home>道にもどる</button>`:`<button class="btn" data-home>道にもどる</button>`}`;
+}
+const canRec=typeof navigator!=="undefined"&&navigator.mediaDevices&&typeof MediaRecorder!=="undefined";
+const player=typeof Audio!=="undefined"?new Audio():{pause(){},play(){}};
+// recState: idle | pending（許可待ち） | rec | done | blocked。recSeq は録音要求の番号で、画面移動・採点・非表示・エラーのたびに進めて古い要求を無効にする
+let rec=null,recUrl="",recState="idle",recSeq=0,recNote="";
+const redraw=()=>{if(L&&L.q[L.i])draw()};
+const tracksOff=st=>{try{st&&st.getTracks().forEach(t=>t.stop())}catch(e){}};
+async function recStart(){
+  if(recState==="pending"||recState==="rec")return; // 連打で要求を重ねない
+  recClear();speechSynthesis.cancel();
+  const my=++recSeq,live=()=>my===recSeq;
+  let st=null;
+  recState="pending";redraw();
+  try{
+    st=await navigator.mediaDevices.getUserMedia({audio:true});
+    if(!live()||document.hidden){tracksOff(st);if(live()){recState="idle";redraw()}return} // 待機中に移動・非表示になった要求は開始しない
+    const chunks=[],r=new MediaRecorder(st);r.st=st;
+    r.onerror=()=>{tracksOff(st);if(!live())return;recSeq++;rec=null;recState="blocked";redraw()}; // 要求を無効化するので、後から届く停止イベントは再生用データを作らない
+    r.ondataavailable=e=>chunks.push(e.data);
+    r.onstop=()=>{tracksOff(st);if(!live())return;rec=null;if(r.keep){recUrl=URL.createObjectURL(new Blob(chunks,{type:r.mimeType}));recState="done"}else recState="idle";redraw()};
+    rec=r;r.start();recState="rec";
+  }catch(e){tracksOff(st);if(!live())return;rec=null;recState="blocked"} // 拒否、または許可後の開始失敗。どちらもマイクを離す
+  redraw();
+}
+function recStop(keep){if(rec&&rec.state!=="inactive"){rec.keep=keep;try{rec.stop()}catch(e){tracksOff(rec.st);recSeq++;rec=null;recState="blocked";redraw()}}} // 保存して停止
+function recCancelPending(){if(recState==="pending"){recSeq++;recState="idle"}} // 許可待ちだけを取り消す
+function recClear(){ // 破棄：現在の要求・録音を無効化し、マイクをその場で離す
+  const r=rec;recSeq++;rec=null;recNote="";
+  if(r){r.keep=false;try{if(r.state!=="inactive")r.stop()}catch(e){}finally{tracksOff(r.st)}}
+  player.pause();if(recUrl){URL.revokeObjectURL(recUrl);recUrl=""}
+  recState="idle";
+}
+function recPlay(){
+  const my=recSeq,fail=()=>{if(my!==recSeq)return;recNote="録音を再生できませんでした。録音なしでも続けられます。";redraw()}; // 古い再生の失敗は新しい画面に出さない
+  speechSynthesis.cancel();player.src=recUrl;
+  try{const pr=player.play();if(pr&&pr.catch)pr.catch(fail)}catch(e){fail()}
+}
+function recUI(){
+  if(!canRec)return "";
+  if(recState==="blocked")return `<p class="heard">マイクを使えませんでした。録音なしでも進めます。許可の画面が出ない場合は、ブラウザーの設定でこのサイトのマイクを許可してください。</p><button class="btn ghost" data-rec>録音を再試行</button>`;
+  if(recState==="pending")return `<button class="btn ghost" disabled>マイクを準備中…</button>`;
+  if(recState==="rec")return `<button class="btn" data-recstop>■ 停止（録音中）</button>`;
+  if(recState==="done")return `<div class="row"><button class="btn ghost" data-recplay>自分の声を聞く</button><button class="btn ghost" data-rec>録り直す</button></div>${recNote?`<p class="heard">${recNote}</p>`:""}`;
+  return `<button class="btn ghost" data-rec>自分の声を録音する</button>`;
+}
+if(document.addEventListener)document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden)return;
+  if(recState==="pending"){recCancelPending();redraw()}
+  else recStop(true);
+});
+UNITS.forEach(u=>{if(u.c&&(u.c.t.length!==3||new Set(u.c.t.map(t=>t[1])).size!==3||!u.c.t.every(t=>u.p[t[1]])))console.error("会話台本の条件違反（3往復・別々の有効な返事）:",u.t);const ok=u.r.filter(r=>Number.isInteger(r[1])&&u.p[r[1]]).map(r=>r[1]);if(u.p.length!==8||ok.length!==u.r.length||new Set(ok).size<2)console.error("教材データの条件違反（8文・会話の対象は有効な番号で、異なるものが2つ以上）:",u.t)});
+app.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b||b.disabled)return;const d=b.dataset,q=L&&L.q[L.i];
+  if("unit" in d)start("unit",+d.unit);
+  else if("talk" in d)start("talk",+d.talk);
+  else if("review" in d)start("review");
+  else if("flash" in d)start("flash");
+  else if("home" in d||"quit" in d)home();
+  else if("book" in d)book();
+  else if("settings" in d){askReset=false;settings()}
+  else if("intro" in d)intro(+d.intro);
+  else if("introdone" in d){S.seen=1;save();home()}
+  else if("set" in d){const k=d.set.split(":")[0],v=d.set.slice(k.length+1);S[k]=k==="sfx"?v==="true":k==="goal"?+v:v;save();settings()}
+  else if("hearsample" in d)speak("Nice to meet you.");
+  else if("copy" in d){
+    const sel=()=>{const x=document.getElementById("exp");if(x){x.focus();x.select()}};
+    const fail=()=>{setMsg="自動でコピーできませんでした。文字列を選択したので、そのままコピーしてください。";settings();sel()};
+    try{navigator.clipboard.writeText(document.getElementById("exp").value).then(()=>{setMsg="コピーしました。";settings()},fail)}catch(e){fail()}
+  }
+  else if("import" in d){if(importCode(document.getElementById("imp").value))setMsg="学習記録を読み込みました。";else setErr="読み込めませんでした。文字列が途中で切れていないか確かめてください。";settings()}
+  else if("reset" in d){askReset=true;settings()}
+  else if("resetno" in d){askReset=false;settings()}
+  else if("resetyes" in d){S=Object.assign(BLANK(),{rate:S.rate,sfx:S.sfx,goal:S.goal,seen:1});roll();save();askReset=false;setMsg="学習記録を消しました。";settings()}
+  else if("hear" in d){const a=ALL.concat(VARS).find(a=>a.id===d.hear);if(a)speak(a.en)}
+  else if("say" in d)speak(q.line&&!q.done&&!q.open?q.line:q.p.en);
+  else if("next" in d){L.i++;show()}
+  else if(q.done)return;
+  else if("reveal" in d)reveal();
+  else if("opt" in d){q.sel=+d.opt;draw()}
+  else if("tile" in d){q.pick.push(+d.tile);draw()}
+  else if("un" in d){q.pick.splice(+d.un,1);draw()}
+  else if("check" in d)grade(q.opts?q.opts[q.sel].id===q.p.id:norm(q.pick.map(k=>q.tiles[k]).join(" "))===norm(q.p.en));
+  else if("self" in d)grade(d.self==="1");
+  else if("rec" in d)recStart();
+  else if("recstop" in d)recStop(true);
+  else if("recplay" in d)recPlay();
+});
+(S.seen||S.xp>0||Object.keys(S.done).length)?home():intro(0);
+</script>
+</body>
+</html>
