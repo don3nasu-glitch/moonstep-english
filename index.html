@@ -105,6 +105,62 @@ textarea:focus-visible{outline:2px solid var(--moon);outline-offset:2px}
 .gd{display:flex;gap:12px;align-items:center}.gd img{width:60px;height:60px;border-radius:50%;flex:none;border:2px solid #f3e3a6;box-shadow:0 0 18px rgba(190,160,255,.55)}
 .gd div{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:4px 16px 16px 16px;padding:10px 14px;line-height:1.6}.gd small{display:block;color:#f3e3a6;font-size:.75rem;letter-spacing:.08em}
 .pic{width:168px;height:168px;border-radius:50%;border:2px solid #f3e3a6;box-shadow:0 0 36px rgba(190,160,255,.6)}.pic.s{width:112px;height:112px}
+/* v21: 押せる立体ボタン・曲がる道・下から出る判定シート・実績 */
+.btn{box-shadow:0 4px 0 #2b7fc0;margin-bottom:4px}.btn:active{transform:translateY(4px)!important;box-shadow:0 0 0 #2b7fc0}
+.btn.ghost{box-shadow:0 4px 0 var(--line)}.btn.ghost:active{box-shadow:0 0 0 var(--line)}
+.opt,.tile{box-shadow:0 3px 0 var(--line)}.opt:active,.tile:active{transform:translateY(3px)!important;box-shadow:0 0 0 var(--line)}
+.opt.sel{box-shadow:0 3px 0 var(--flame)}
+.top .bar{height:14px;border-radius:14px}.top .bar i{border-radius:14px;background:linear-gradient(180deg,#8fd0ff,var(--flame));transition:width .45s cubic-bezier(.3,1.4,.5,1)}
+.combo{color:#ffb35c;font-weight:700;font-size:.9rem;white-space:nowrap;animation:pop .3s}
+@keyframes pop{from{transform:scale(.4)}60%{transform:scale(1.25)}}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.dock.sheet{margin-inline:-16px;padding:18px 16px calc(14px + env(safe-area-inset-bottom,0px));border-radius:22px 22px 0 0;animation:up .25s ease-out;gap:12px}
+.dock.sheet.ok{background:#123a2e;border-top:2px solid var(--ok)}.dock.sheet.ng{background:#3f1b25;border-top:2px solid var(--ng);animation:up .25s ease-out,shake .35s .2s}
+@keyframes up{from{transform:translateY(100%)}}
+.sheet .shh{display:flex;gap:12px;align-items:center}.sheet .shh img{width:52px;height:52px;border-radius:50%;border:2px solid currentColor;flex:none}
+.sheet.ok .shh{color:var(--ok)}.sheet.ng .shh{color:var(--ng)}
+.sheet .shh b{display:block;font-size:1.25rem}.sheet .xp{font-size:.85rem;font-weight:700}
+.sheet p{margin:0;color:var(--ink)}
+.sheet.ok .btn{background:var(--ok);color:#06281b;box-shadow:0 4px 0 #3c9a70}.sheet.ng .btn{background:var(--ng);color:#3a0a12;box-shadow:0 4px 0 #b65561}
+.hud{display:flex;align-items:center;gap:8px}.hud .chip{display:flex;align-items:center;gap:5px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hud .sp{flex:1}.ring{width:22px;height:22px;border-radius:50%;background:conic-gradient(var(--flame) calc(var(--p)*1%),var(--line) 0);display:inline-grid;place-items:center}.ring::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--panel)}
+.brand{font-family:var(--display);font-weight:800;letter-spacing:.03em;margin:0;font-size:1rem;white-space:nowrap}.pn:has(.popb){margin-top:54px}.hud .chip{padding:6px 9px;font-size:.9rem}.hud{gap:6px}.hud .say{padding:8px 12px}.brand{font-size:.92rem}
+.path{align-items:center;gap:0;padding-bottom:12px}
+.stage{align-self:stretch;display:flex;justify-content:space-between;align-items:baseline;background:linear-gradient(135deg,#2a2f6e,#1c2550);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-top:22px}
+.stage b{font-family:var(--display);font-size:1.1rem}.stage span{color:var(--dim);font-size:.8rem}
+.pn{display:flex;flex-direction:column;align-items:center;gap:6px;transform:translateX(var(--x));margin-top:26px;position:relative}
+.orb{width:78px;height:72px;border-radius:50%;border:0;cursor:pointer;font-size:1.05rem;font-weight:700;letter-spacing:.05em;color:#6b5510;background:radial-gradient(circle at 35% 30%,#fff6cf,var(--moon) 60%);box-shadow:0 7px 0 #b39a4b,0 0 28px -4px var(--moon);transition:transform .08s}
+.orb:active{transform:translateY(6px);box-shadow:0 1px 0 #b39a4b}
+.orb.new{color:#06203a;font-size:1.5rem;background:radial-gradient(circle at 35% 30%,#c5e6ff,var(--flame) 65%);box-shadow:0 7px 0 #2b7fc0,0 0 0 8px rgba(79,180,255,.18),0 0 34px -2px var(--flame);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 7px 0 #2b7fc0,0 0 0 14px rgba(79,180,255,.08),0 0 40px 0 var(--flame)}}
+.orb.lock{background:#273061;box-shadow:0 7px 0 #1a2148;color:#5d679c;cursor:default;font-size:1.2rem}
+.pn .nm{font-size:.82rem;font-weight:700;text-align:center;max-width:170px;line-height:1.35}.pn.off .nm{color:#5d679c}
+.pn .popb{position:absolute;top:-34px;background:var(--ink);color:var(--night);font-weight:700;font-size:.8rem;padding:4px 12px;border-radius:10px;animation:bob 1.2s ease-in-out infinite;white-space:nowrap;z-index:1}
+.pn .popb::after{content:"";position:absolute;left:50%;bottom:-5px;width:10px;height:10px;background:inherit;transform:translateX(-50%) rotate(45deg)}
+@keyframes bob{50%{transform:translateY(-5px)}}
+.say.mini{min-height:34px;padding:4px 12px;font-size:.78rem;align-self:center}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;justify-content:center;background:rgba(11,16,38,.94);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs div{display:flex;width:100%;max-width:480px}
+.tabs button{flex:1;background:none;border:0;color:var(--dim);padding:8px 2px 10px;font-size:.7rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+.tabs button i{font-style:normal;font-size:1.35rem;line-height:1.2}.tabs button.on{color:var(--flame);font-weight:700}
+.tabs em{position:absolute;top:4px;left:54%;background:var(--ng);color:#3a0a12;font-style:normal;font-weight:700;font-size:.65rem;border-radius:999px;padding:0 6px}
+.tabpad{height:64px;flex:none}
+.week{display:flex;justify-content:space-between;gap:6px}.week div{flex:1;text-align:center;font-size:.72rem;color:var(--dim)}
+.week i{display:grid;place-items:center;aspect-ratio:1;border-radius:50%;border:2px solid var(--line);margin-bottom:4px;font-style:normal;font-size:1rem}
+.week .on i{background:var(--moon);border-color:var(--moon);color:#6b5510;box-shadow:0 0 14px -2px var(--moon)}.week .td{color:var(--ink);font-weight:700}
+.bdg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.bdg div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 6px;text-align:center;font-size:.72rem;color:var(--dim);line-height:1.4}
+.bdg i{display:block;font-style:normal;font-size:1.9rem;filter:grayscale(1) opacity(.3)}.bdg b{display:block;color:var(--ink);font-size:.8rem}
+.bdg .got{border-color:var(--moon);box-shadow:0 0 18px -8px var(--moon)}.bdg .got i{filter:none}
+.lv{display:flex;align-items:center;gap:14px}.lv .n{width:72px;height:72px;border-radius:50%;flex:none;display:grid;place-items:center;font-family:var(--display);font-size:1.7rem;color:#6b5510;background:radial-gradient(circle at 35% 30%,#fff6cf,var(--moon) 60%);box-shadow:0 0 26px -4px var(--moon)}
+.lv div{flex:1}
+.stats.g4{flex-wrap:wrap}.stats.g4 .stat{flex:1 1 40%}
+.cf{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9}.cf i{position:absolute;top:-24px;width:9px;height:15px;border-radius:2px;animation:fall 2.4s ease-in forwards}
+@keyframes fall{to{transform:translateY(112vh) rotate(720deg)}}
+.newb{background:linear-gradient(135deg,#3a3270,#1c2550);border:1px solid var(--moon);border-radius:14px;padding:12px 16px;display:flex;gap:12px;align-items:center;animation:pop .45s}.newb i{font-style:normal;font-size:2rem}.newb span{display:block;color:var(--moon);font-size:.75rem;font-weight:700}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mc{min-height:62px;background:var(--panel);border:1px solid var(--line);box-shadow:0 3px 0 var(--line);color:var(--ink);border-radius:12px;padding:8px 10px;cursor:pointer;font-size:.92rem;line-height:1.35;transition:transform .08s}
+.mc.sel{border-color:var(--flame);box-shadow:0 3px 0 var(--flame);background:var(--deep)}.mc.fin{border-color:var(--ok);color:var(--ok);box-shadow:none;opacity:.55;animation:pop .3s}.mc.bad{border-color:var(--ng);color:var(--ng);animation:shake .35s}
 </style>
 </head>
 <body>
@@ -222,12 +278,12 @@ const UNITS=[
 const slug=en=>en.toLowerCase().replace(/[^a-z ]/g,"").trim();
 const ALL=UNITS.flatMap((u,i)=>u.p.map((p,j)=>({id:p[0],u:i,j,en:p[1],ja:p[2],note:p[3]})));
 const VARS=UNITS.flatMap((u,i)=>(u.v||[]).map(v=>({id:v[0],u:i,en:v[2],ja:v[3],base:u.p[v[1]][1]})));
-const KIND={meaning:"意味を選ぶ",build:"英語に組み立てる",listen:"聞き取る",speak:"声に出す",reply:"会話で返事をする",flash:"英語で口に出す"};
+const KIND={match:"ペアを見つける",meaning:"意味を選ぶ",build:"英語に組み立てる",listen:"聞き取る",speak:"声に出す",reply:"会話で返事をする",flash:"英語で口に出す"};
 const GOAL=50, KEY="moonstep-english-v1", GAP=[1,3,7,14,30];
 const day=n=>new Date(Date.now()+n*864e5-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
 let S={xp:0,streak:0,last:"",done:{},rev:{},day:"",dayXp:0};
 try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){}
-delete S.weak;S.talk=S.talk||{};
+delete S.weak;S.talk=S.talk||{};S.days=S.days||{};S.bg=S.bg||{};
 { // 旧版の記録：英文キーは同じフレーズのIDへ移し、位置キーは別フレーズに引き継がせず破棄して知らせる
   const M={},IDS=new Set();ALL.concat(VARS).forEach(a=>{M[slug(a.en)]=a.id;IDS.add(a.id)});
   Object.keys(S.rev).forEach(k=>{if(IDS.has(k))return;if(M[k]&&!S.rev[M[k]])S.rev[M[k]]=S.rev[k];else if(!M[k])S.notice=1;delete S.rev[k]});
@@ -279,26 +335,44 @@ function hello(nDue,next){ // 案内役のひとこと（学習の状況に合�
   if(S.streak>=3)return `${S.streak}日連続ですね。その積み重ねが、いちばんの力になります。`;
   return "今日も3分だけ、声に出してみましょう。小さな一歩で十分です。";
 }
+const sum=o=>Object.values(o||{}).reduce((a,b)=>a+(+b||0),0);
+function badges(){ // 実績。いまの学習記録から毎回計算する
+  const u=Object.keys(S.done).length,r=Object.keys(S.rev).length,st=Math.max(S.streak,S.maxStreak||0);
+  return [["first","🌒","最初の一歩","歩みを1つクリア",u>=1],["u5","🌓","五つの歩み","歩みを5つクリア",u>=5],["u10","🌔","十の歩み","歩みを10クリア",u>=10],["u20","🌕","満月","全20の歩みをクリア",u>=20],
+    ["s3","🔥","三日つづけた","3日連続で学習",st>=3],["s7","🔥","一週間","7日連続で学習",st>=7],["s30","🔥","ひと月","30日連続で学習",st>=30],
+    ["p50","📖","50の言葉","50文を学習",r>=50],["p100","📚","100の言葉","100文を学習",r>=100],["p160","🏛","すべての言葉","160文を学習",r>=160],
+    ["pf1","✨","満ちた一歩","ミスなしでクリア",(S.perfect||0)>=1],["pf10","💎","磨かれた歩み","ミスなしで10回クリア",(S.perfect||0)>=10],
+    ["c10","⚡","10連続正解","1回の学習で10連続正解",(S.bestCombo||0)>=10],["t5","💬","会話の達人","3往復の会話を5回",sum(S.talk)>=5],["x1000","⭐","1000 XP","合計1000XPを獲得",S.xp>=1000]];
+}
+const tabs=on=>{const n=due().length;return `<div class="tabpad"></div><nav class="tabs"><div>${[["home","🌙","ホーム"],[n?"review":"flash","⚡",n?"復習":"特訓"],["book","📖","フレーズ帳"],["stats","🏅","記録"]].map(([k,ic,t],x)=>`<button data-${k} class="${on===x?"on":""}"><i>${ic}</i>${t}${x===1&&n?`<em>${n}</em>`:""}</button>`).join("")}</div></nav>`};
 function home(){
   clearTimeout(timer);recClear();L=null;roll();
-  const pct=Math.min(100,S.dayXp/goal()*100),nDue=due().length,kept=Object.values(S.rev).filter(r=>r.step>0).length;
+  const pct=Math.min(100,S.dayXp/goal()*100),nDue=due().length;
   const notice=S.notice?`<p class="fb ng">教材更新に伴い学習記録をリセットしました。XP・連続日数は保持しています。</p>`:"";if(S.notice){delete S.notice;save()}
   const next=UNITS.findIndex((u,i)=>!S.done[i]); // 次に進むユニット（順番に解放）
   const cont=next>=0?`<button class="${nDue?"btn ghost":"cta"}" data-unit="${next}">${nDue?`${next?"つづきから":"はじめる"}：${UNITS[next].t}`:`<span class="sub">${next?"つづきから":"はじめる"}</span><b>${UNITS[next].t}</b><span class="sub">${UNITS[next].d}。約3分</span><span class="go">はじめる →</span>`}</button>`:"";
   const cta=nDue?`<button class="cta" data-review><span class="sub">まずはここから</span><b>今日の復習 ${nDue}件</b><span class="sub">別の日でも口で言えるかを確かめます</span><span class="go">復習する →</span></button>${cont}`
     :cont||`<button class="cta" data-flash><span class="sub">すべての歩みをクリア</span><b>6秒チャレンジ</b><span class="sub">学んだフレーズを10本、すばやく口に出す</span><span class="go">挑戦する →</span></button>`;
-  app.innerHTML=`${notice}<header class="hd"><div><h1>Moonstep English</h1><p class="sub">月の歩みで、話せる英語へ。</p></div><button class="say" data-settings>設定</button></header>
+  const X=[0,46,72,46,0,-46,-72,-46];
+  app.innerHTML=`${notice}<header class="hud"><p class="brand">Moonstep English</p><span class="sp"></span><span class="chip" aria-label="連続日数">🔥 ${S.streak}</span><span class="chip" aria-label="今日のXP"><span class="ring" style="--p:${pct}"></span>${Math.min(S.dayXp,goal())}/${goal()}</span><button class="say" data-settings aria-label="設定">⚙</button></header>
   ${gd(hello(nDue,next))}
   ${cta}
-  <div class="stats"><div class="stat"><b>${S.streak}</b><span>連続日数</span></div><div class="stat"><b>${kept}</b><span>別日に言えた（自己判定）</span></div><div class="stat"><b>${Math.min(S.dayXp,goal())}<small> / ${goal()}</small></b><span>今日のXP</span></div></div>
-  <div class="bar" role="progressbar" aria-label="今日の目標" aria-valuenow="${Math.round(pct)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
-  <div class="row"><button class="btn ghost" data-flash>6秒チャレンジ</button><button class="btn ghost" data-book>フレーズ帳（${Object.keys(S.rev).length}文）</button></div>
-  <div class="path">${UNITS.map((u,i)=>{const n=S.done[i]||0,open=i===0||S.done[i-1];
-    if(!open)return `<div class="unit lock"><span class="moon sm"></span><h2>${u.t}</h2></div>`;
-    return `<div class="unit"><button class="node" data-unit="${i}"><span class="moon m${Math.min(n,2)}"></span><div><h2>${u.t}${i===next?`<span class="tag">いまここ</span>`:""}</h2><p class="sub">${u.d}<br>${n?`クリア ${n}回`:"未挑戦"}</p></div></button>${n?`<button class="say" data-talk="${i}">3往復の会話に挑戦${S.talk[i]?`（${S.talk[i]}回）`:""}</button>`:""}</div>`}).join("")}</div>`;
+  <div class="path">${UNITS.map((u,i)=>{const n=S.done[i]||0,open=i===0||S.done[i-1],cur=i===next;
+    const st=i%5?"":`<div class="stage"><b>ステージ ${i/5+1}</b><span>第${i+1}〜${i+5}歩</span></div>`;
+    return st+`<div class="pn ${open?"":"off"}" style="--x:${X[i%8]}px">${cur?`<span class="popb">${i?"つづきから":"はじめる"}</span>`:""}<button class="orb ${cur?"new":open?"":"lock"}" ${open?`data-unit="${i}"`:"disabled"} aria-label="${u.t}${open?"":"（まだ開いていません）"}">${cur?"▶":open?"★".repeat(Math.min(n,3)):"🔒"}</button><span class="nm">${u.t}</span>${n?`<button class="say mini" data-talk="${i}">💬 会話に挑戦${S.talk[i]?` ${S.talk[i]}回`:""}</button>`:""}</div>`}).join("")}</div>${tabs(0)}`;
+}
+function stats(){
+  clearTimeout(timer);recClear();L=null;roll();
+  const lv=Math.floor(S.xp/200)+1,into=S.xp%200,bs=badges(),wd="日月火水木金土";
+  const week=[-6,-5,-4,-3,-2,-1,0].map(n=>{const d=day(n),on=S.days[d]>0;return `<div class="${on?"on":""} ${n?"":"td"}"><i>${on?"✓":""}</i>${n?wd[new Date(d+"T12:00:00").getDay()]:"今日"}</div>`}).join("");
+  app.innerHTML=`<header class="hud"><p class="brand">記録</p><span class="sp"></span><button class="say" data-settings aria-label="設定">⚙</button></header>
+  <div class="lv"><span class="n">${lv}</span><div><b>レベル ${lv}</b><p class="sub">次のレベルまで あと ${200-into} XP</p><div class="bar"><i style="width:${into/2}%"></i></div></div></div>
+  <div class="stats g4"><div class="stat"><b>🔥 ${S.streak}</b><span>連続日数</span></div><div class="stat"><b>⭐ ${S.xp}</b><span>合計XP</span></div><div class="stat"><b>${Object.keys(S.done).length}<small> / ${UNITS.length}</small></b><span>クリアした歩み</span></div><div class="stat"><b>${Object.keys(S.rev).length}<small> / ${ALL.length+VARS.length}</small></b><span>学んだ文</span></div></div>
+  <h2>この7日間</h2><div class="week">${week}</div>
+  <h2>実績　${bs.filter(b=>b[4]).length} / ${bs.length}</h2><div class="bdg">${bs.map(b=>`<div class="${b[4]?"got":""}"><i>${b[1]}</i><b>${b[2]}</b>${b[3]}</div>`).join("")}</div>${tabs(3)}`;
 }
 
-const BLANK=()=>({xp:0,streak:0,last:"",done:{},rev:{},day:"",dayXp:0,talk:{}});
+const BLANK=()=>({xp:0,streak:0,last:"",done:{},rev:{},day:"",dayXp:0,talk:{},days:{},bg:{}});
 const PAGES=[
   ["月の歩みで、話せる英語へ","案内役のすずねです。いっしょに歩いていきましょう。1レッスンは約3分。聞いて、組み立てて、声に出します。全20の歩みで、場面ごとの言い方を身につけます。"],
   ["口に出すのが、いちばんの近道","答えを見る前に英語を声に出し、言えたかどうかを自分で判定します。学んだ文は日をあけて復習に戻ってきます。"],
@@ -319,6 +393,8 @@ function importCode(code){ // 文字列から学習記録を読み込む。形�
     UNITS.forEach((u,i)=>{if(+o.done[i]>0)n.done[i]=+o.done[i];if(o.talk&&+o.talk[i]>0)n.talk[i]=+o.talk[i]});
     Object.keys(o.rev).forEach(k=>{const r=o.rev[k];if(ids.has(k)&&r&&/^\d{4}-\d\d-\d\d$/.test(r.due))n.rev[k]={step:Math.min(4,Math.max(0,+r.step||0)),due:r.due}});
     if(o.rate==="slow"||o.rate==="norm")n.rate=o.rate;if(typeof o.sfx==="boolean")n.sfx=o.sfx;if([30,50,100].includes(o.goal))n.goal=o.goal;n.seen=1;
+    if(o.days&&typeof o.days==="object")Object.keys(o.days).forEach(k=>{if(/^\d{4}-\d\d-\d\d$/.test(k)&&+o.days[k]>0)n.days[k]=+o.days[k]});
+    ["perfect","bestCombo","maxStreak"].forEach(k=>{if(+o[k]>0)n[k]=+o[k]});if(o.bg&&typeof o.bg==="object")Object.keys(o.bg).forEach(k=>{if(/^[a-z0-9]{1,12}$/.test(k))n.bg[k]=1});
     S=n;roll();save();return true;
   }catch(e){return false}
 }
@@ -343,7 +419,7 @@ function book(){
   const rows=UNITS.map((u,i)=>{const ps=ALL.concat(VARS).filter(a=>a.u===i&&S.rev[a.id]);
     return ps.length?`<h2>${u.t}</h2>`+ps.map(a=>`<button class="opt" data-hear="${a.id}">${a.en}<br><span class="sub">${a.ja}　${S.rev[a.id].step>0?"別日に言えた":"学習中"}</span></button>`).join(""):""}).join("");
   app.innerHTML=`<div class="top"><button class="x" data-home aria-label="もどる">×</button><h1>フレーズ帳</h1></div><p class="sub">タップすると音声が流れます。学んだフレーズはすべて復習に戻り、正解に応じて次の復習までの間隔を1・3・7・14・30日へ延ばします。</p>
-  <div class="opts">${rows||`<p class="sub">まだ学んだフレーズがありません。最初の歩みから始めましょう。</p>`}</div>`;
+  <div class="opts">${rows||`<p class="sub">まだ学んだフレーズがありません。最初の歩みから始めましょう。</p>`}</div>${tabs(2)}`;
 }
 function start(mode,unit){
   let q;
@@ -351,6 +427,7 @@ function start(mode,unit){
     const rs=shuffle(UNITS[unit].r).slice(0,2),ph=shuffle(ALL.filter(a=>a.u===unit&&!rs.some(r=>r[1]===a.j)));let pi=0,ri=0; // 会話2文＋残り6文＝8文を一度ずつ
     q=["meaning","listen","build","reply","speak","flash","reply","flash"].map(t=>t==="reply"?{p:ALL.find(a=>a.u===unit&&a.j===rs[ri][1]),sit:rs[ri][2],line:rs[ri++][0],type:t}:{p:ph[pi++],type:t});
     const vs=shuffle(VARS.filter(v=>v.u===unit));if(vs[0])q.push({p:vs[0],type:"flash"});
+    q.splice(5,0,{p:ph[0],type:"match",unit}); // 途中の息抜き：英語と意味のペア合わせ
   }else if(mode==="talk"){ // 日本語なしで、相手の英語を聞いて口で返す、を3回つなぐ
     const c=UNITS[unit].c;
     q=c?c.t.map((t,k)=>({p:ALL.find(a=>a.u===unit&&a.j===t[1]),type:"flash",line:t[0],sit:c.sit,hear:true,turn:k+1})) // 台本あり：順番どおりに話がつながる
@@ -367,6 +444,7 @@ function start(mode,unit){
 function setup(q){
   q.done=false;q.pick=[];q.sel=null;q.heard="";q.open=false;
   const others=f=>shuffle(ALL.filter(a=>a.id!==q.p.id&&f(a))).slice(0,2);
+  if(q.type==="match"){const ps=shuffle(ALL.filter(a=>a.u===q.unit)).slice(0,4);q.cards=[shuffle(ps).map(a=>({id:a.id,t:a.en,e:1})),shuffle(ps).map(a=>({id:a.id,t:a.ja}))];q.fin={};q.msel=null;q.bad=null}
   if(q.type==="meaning")q.opts=shuffle([q.p,...others(()=>true)]);
   if(q.type==="reply")q.opts=shuffle([q.p,...others(a=>a.u===q.p.u)]);
   if(q.type==="build"||q.type==="listen")q.tiles=shuffle([...words(q.p.en),...others(()=>true).map(a=>words(a.en)[1])]);
@@ -374,11 +452,20 @@ function setup(q){
 function show(){
   clearTimeout(timer);recClear();
   const q=L.q[L.i]; if(!q)return result();
-  setup(q);
+  setup(q);try{window.scrollTo(0,0)}catch(e){}
   if(q.type==="reply")speak(q.line,1);
   else if(q.type==="flash"){if(q.hear)speak(q.line,1);if(q.timed)timer=setTimeout(reveal,6000)}
-  else if(q.type!=="build")speak(q.p.en);
+  else if(q.type!=="build"&&q.type!=="match")speak(q.p.en);
   draw();
+}
+function pickM(side,n){ // ペア合わせ：英語と日本語を1枚ずつ選ぶ
+  const q=L.q[L.i],c=q.cards[side][n];if(q.fin[c.id]||q.bad)return;
+  if(c.e)speak(c.t);
+  if(!q.msel||q.msel[0]===side){q.msel=[side,n];return draw()}
+  const o=q.cards[q.msel[0]][q.msel[1]];
+  if(o.id===c.id){q.fin[c.id]=1;q.msel=null;sfx(true,Object.keys(q.fin).length);if(Object.keys(q.fin).length===4)return grade(true);return draw()}
+  q.bad=[q.msel,[side,n]];q.msel=null;sfx(false);draw();
+  setTimeout(()=>{if(L&&L.q[L.i]===q&&!q.done){q.bad=null;draw()}},500);
 }
 function reveal(){
   clearTimeout(timer);const q=L&&L.q[L.i];if(!q||q.type!=="flash"||q.open)return;
@@ -386,11 +473,13 @@ function reveal(){
   q.open=true;speak(q.p.en);draw(); // 録音の停止完了前は読み上げず、音声ボタンで聞く
 }
 function draw(){
-  const q=L.q[L.i],p=q.p;let body="";
+  const q=L.q[L.i],p=q.p,pw=(L.i+(q.done?1:0))/L.q.length*100;let body="";
   const audio=`<button class="say" data-say>▶ 音声を聞く</button>`;
   const self=`<div class="row"><button class="btn ghost" data-self="1">${q.type==="flash"?"見る前に言えた":"声に出して言えた"}</button><button class="btn ghost" data-self="0">まだ難しい</button></div><p class="sub">模範文と違っても、同じ意味で自然に言えたら「言えた」でかまいません。</p>`;
   const sit=q.sit?`<p class="sub">状況：${q.sit}</p>`:"",ja=p.ja+(p.note?`<br><span class="sub">（${p.note}）</span>`:"")+(p.base?`<br><span class="sub">もとの型：${p.base}</span>`:"");
   const opts=k=>`<div class="opts">${q.opts.map((o,n)=>`<button class="opt ${q.done?(o.id===p.id?"ok":q.sel===n?"ng":""):q.sel===n?"sel":""}" data-opt="${n}">${o[k]}</button>`).join("")}</div>`;
+  if(q.type==="match"){const cl=(s,n,c)=>q.fin[c.id]?"fin":q.bad&&q.bad.some(b=>b[0]===s&&b[1]===n)?"bad":q.msel&&q.msel[0]===s&&q.msel[1]===n?"sel":"";
+    body=`<p class="prompt">英語と意味のペアをタップ</p><div class="mgrid">${[0,1,2,3].map(n=>[0,1].map(s=>{const c=q.cards[s][n];return `<button class="mc ${cl(s,n,c)}" data-m="${s}:${n}" ${q.fin[c.id]?"disabled":""}>${c.t}</button>`}).join("")).join("")}</div>`}
   if(q.type==="meaning")body=`<p class="prompt">${p.en}</p>${audio}${opts("ja")}`;
   if(q.type==="reply")body=`${sit}<p class="sub">相手</p><p class="line">${q.line}</p>${audio}<p class="sub">あなたの返事を選ぶ</p>${opts("en")}`;
   if(q.type==="build"||q.type==="listen")body=`${q.type==="build"?`<p class="prompt">${ja}</p>`:audio}
@@ -402,44 +491,57 @@ function draw(){
     ?`<p class="prompt">${p.en}</p>${q.hear?`<p class="sub">${p.ja}（返事の一例）</p>`:""}${audio}${q.done?"":recUI()}`
     :`${q.timed?`<div class="bar timer"><i></i></div>`:""}<p class="sub">${q.timed?"6秒以内に":"時間は気にせず、"}${q.hear?"声に出してから答えを見ます。":"英語で声に出してから答えを見ます。"}</p>${recUI()}`);
   let foot="";
-  if(q.done)foot=`<div class="fb ${q.ok?"ok":"ng"}"><b>${q.ok?"正解 +10 XP":"おしい。明日もう一度確認します"}</b><p>${p.en}<br><span class="sub">${p.ja}</span></p><button class="btn" data-next>次へ</button></div>`;
+  if(q.done)foot=`<div class="shh"><img src="${IMG_F}" alt=""><div><b>${q.msg||""}</b><span class="xp">${q.ok?`+10 XP${L.combo>=2?`　🔥 ${L.combo}連続`:""}`:"明日もう一度確認します"}</span></div></div>${q.type==="match"?"":`<p>${p.en}<br><span class="sub">${p.ja}</span></p>`}<button class="btn" data-next>次へ</button>`;
+  else if(q.type==="match")foot="";
   else if(q.opts||q.tiles)foot=`<button class="btn" data-check ${(q.opts?q.sel===null:!q.pick.length)?"disabled":""}>答え合わせ</button>`;
   else if(q.type==="flash"&&!q.open)foot=`<button class="btn" data-reveal>答えを見る</button>`;
   else foot=self; // 声に出す問題・答えを開いた後は、自己判定を親指の届く下部に置く
-  app.innerHTML=`<div class="top"><button class="x" data-quit aria-label="やめる">×</button><div class="bar"><i style="width:${L.i/L.q.length*100}%"></i></div><span class="left">あと${L.q.length-L.i}問</span></div>
-  <span class="kind">${L.mode==="talk"?(q.turn&&!q.retry?`つながる会話 ${q.turn} / 3`:"3往復の会話　聞いて返す"):q.hear?"聞いて返す":p.base?"型を見ながら入れ替えて言う（補助練習）":KIND[q.type]}</span>${body}${foot?`<div class="dock">${foot}</div>`:""}`;
+  app.innerHTML=`<div class="top"><button class="x" data-quit aria-label="やめる">×</button><div class="bar"><i style="width:${L.pw||0}%" data-w="${pw}"></i></div>${L.combo>=2?`<span class="combo">🔥 ${L.combo}</span>`:`<span class="left">あと${L.q.length-L.i-(q.done?1:0)}問</span>`}</div>
+  <span class="kind">${L.mode==="talk"?(q.turn&&!q.retry?`つながる会話 ${q.turn} / 3`:"3往復の会話　聞いて返す"):q.hear?"聞いて返す":p.base?"型を見ながら入れ替えて言う（補助練習）":KIND[q.type]}</span>${body}${foot?`<div class="dock${q.done?` sheet ${q.ok?"ok":"ng"}`:""}">${foot}</div>`:""}`;
+  L.pw=pw;if(typeof requestAnimationFrame!=="undefined"&&document.querySelector)requestAnimationFrame(()=>{const e=document.querySelector(".top .bar i");if(e)e.style.width=e.dataset.w+"%"});
 }
 let ac=null;
-function sfx(ok){ // 正誤の短い効果音。タップ操作のあとだけ鳴る。S.sfx===false で消音
+function sfx(ok,cb){const up=1+Math.min(cb||0,8)*.06; // 正誤の短い効果音。タップ操作のあとだけ鳴る。S.sfx===false で消音
   if(S.sfx===false)return;
   try{
     ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();
-    (ok?[[660,0],[880,.09]]:[[220,0]]).forEach(([f,t])=>{const o=ac.createOscillator(),g=ac.createGain(),t0=ac.currentTime+t;
+    (ok==="win"?[[523,0],[659,.12],[784,.24],[1047,.38]]:ok?[[660*up,0],[880*up,.09]]:[[220,0]]).forEach(([f,t])=>{const o=ac.createOscillator(),g=ac.createGain(),t0=ac.currentTime+t;
       o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(.12,t0+.02);g.gain.exponentialRampToValueAtTime(.0001,t0+.18);
       o.connect(g);g.connect(ac.destination);o.start(t0);o.stop(t0+.2)});
   }catch(e){}
 }
+const PRAISE=["正解！","いいですね！","その調子です！","きれいです！","ばっちりです！","すばらしい！"];
 function grade(ok){
-  const q=L.q[L.i],id=q.p.id,r=S.rev[id];recClear();roll();sfx(ok);q.done=true;q.ok=ok;L.total++;
-  if(ok){L.right++;S.xp+=10;S.dayXp+=10;
-    if(!r)S.rev[id]={step:0,due:day(1)};
-    else if(L.mode==="review"&&!q.retry){r.step=Math.min(r.step+1,4);r.due=day(GAP[r.step])}
+  const q=L.q[L.i],id=q.p.id,r=S.rev[id],m=q.type==="match";if(m)ok=true;recClear();roll();q.done=true;q.ok=ok;L.total++;
+  L.combo=ok?(L.combo||0)+1:0;L.best=Math.max(L.best||0,L.combo);if(L.combo>(S.bestCombo||0))S.bestCombo=L.combo;
+  q.msg=m?"ペア完成！":ok?([3,5,10,15].includes(L.combo)?`${L.combo}連続正解！`:PRAISE[Math.random()*PRAISE.length|0]):"おしい！";
+  sfx(ok,L.combo);try{navigator.vibrate&&navigator.vibrate(ok?12:[30,40,30])}catch(e){}
+  if(ok){L.right++;S.xp+=10;S.dayXp+=10;S.days[day(0)]=(S.days[day(0)]||0)+10;
+    if(!m){if(!r)S.rev[id]={step:0,due:day(1)};
+    else if(L.mode==="review"&&!q.retry){r.step=Math.min(r.step+1,4);r.due=day(GAP[r.step])}}
     if(q.type==="reply")speak(q.p.en);
   }else{(L.miss=L.miss||new Set()).add(id);S.rev[id]={step:0,due:day(1)};if(!q.retry)L.q.push({...q,retry:true})}
   save();draw();
 }
 function result(){
   if(S.last!==day(0)){S.streak=S.last===day(-1)?S.streak+1:1;S.last=day(0)}
+  S.maxStreak=Math.max(S.maxStreak||0,S.streak);
   if(L.mode==="unit")S.done[L.unit]=(S.done[L.unit]||0)+1;
   if(L.mode==="talk")S.talk[L.unit]=(S.talk[L.unit]||0)+1;
-  save();
   const first=L.q.filter(x=>!x.retry).length,miss=[...(L.miss||[])].map(id=>ALL.concat(VARS).find(a=>a.id===id)).filter(Boolean);
-  const nx=L.mode==="unit"&&UNITS[L.unit+1]?L.unit+1:-1;
-  app.innerHTML=`<header class="done"><img class="pic s" src="${IMG_B}" alt="すずね"><h1>${L.mode==="talk"?"会話が、つながった。":miss.length?"一歩、進んだ。":"満ちた一歩。"}</h1><p class="sub">${first-miss.length} / ${first} 問を一度で通過</p></header>
+  if(L.mode==="unit"&&!miss.length)S.perfect=(S.perfect||0)+1;
+  const fresh=badges().filter(b=>b[4]&&!S.bg[b[0]]);fresh.forEach(b=>S.bg[b[0]]=1);
+  const keys=Object.keys(S.days).sort();while(keys.length>90)delete S.days[keys.shift()];
+  save();sfx("win");
+  const nx=L.mode==="unit"&&UNITS[L.unit+1]?L.unit+1:-1,xp=L.right*10,acc=Math.round((first-miss.length)/first*100);
+  const cf=`<div class="cf" aria-hidden="true">${Array.from({length:30},(_,k)=>`<i style="left:${(k*37+5)%100}%;background:${["#f3e3a6","#4fb4ff","#c9a6ff","#6fe0a8"][k%4]};animation-delay:${(k%7)*.13}s;animation-duration:${2+(k%5)*.35}s"></i>`).join("")}</div>`;
+  app.innerHTML=`${cf}<header class="done"><img class="pic s" src="${IMG_B}" alt="すずね"><h1>${L.mode==="talk"?"会話が、つながった。":miss.length?"一歩、進んだ。":"満ちた一歩。"}</h1><p class="sub">${first-miss.length} / ${first} 問を一度で通過</p></header>
   ${gd(L.mode==="talk"?"最後まで会話を続けられましたね。本番でも、きっと同じように話せます。":miss.length?"迷った文は、明日もう一度いっしょに確かめましょう。つまずいた所ほど、よく残ります。":"ぜんぶ一度で言えましたね。とてもきれいな一歩でした。")}
-  <div class="stats"><div class="stat"><b>+${L.right*10}</b><span>獲得XP</span></div><div class="stat"><b>${S.streak}</b><span>連続日数</span></div></div>
+  <div class="stats g4"><div class="stat"><b>⭐ +<i id="cu" style="font-style:normal">${xp}</i></b><span>獲得XP</span></div><div class="stat"><b>${acc}%</b><span>一度で通過</span></div><div class="stat"><b>⚡ ${L.best||0}</b><span>最大の連続正解</span></div><div class="stat"><b>🔥 ${S.streak}</b><span>連続日数</span></div></div>
+  ${fresh.map(b=>`<div class="newb"><i>${b[1]}</i><div><span>新しい実績</span><b>${b[2]}</b><p class="sub">${b[3]}</p></div></div>`).join("")}
   ${miss.length?`<h2>明日もう一度確認する文</h2><div class="opts">${miss.map(a=>`<button class="opt" data-hear="${a.id}">${a.en}<br><span class="sub">${a.ja}</span></button>`).join("")}</div>`:""}
-  ${nx>=0?`<button class="btn" data-unit="${nx}">次の歩みへ：${UNITS[nx].t}</button><button class="btn ghost" data-home>道にもどる</button>`:`<button class="btn" data-home>道にもどる</button>`}`;
+  <div class="dock">${nx>=0?`<button class="btn" data-unit="${nx}">次の歩みへ：${UNITS[nx].t}</button><button class="btn ghost" data-home>道にもどる</button>`:`<button class="btn" data-home>道にもどる</button>`}</div>`;
+  if(typeof requestAnimationFrame!=="undefined"&&document.getElementById("cu")){let v=0;const t=setInterval(()=>{v=Math.min(xp,v+Math.max(1,xp/20|0));const e=document.getElementById("cu");if(!e||v>=xp)clearInterval(t);if(e)e.textContent=v},35)}
 }
 const canRec=typeof navigator!=="undefined"&&navigator.mediaDevices&&typeof MediaRecorder!=="undefined";
 const player=typeof Audio!=="undefined"?new Audio():{pause(){},play(){}};
@@ -500,6 +602,7 @@ app.addEventListener("click",e=>{
   else if("flash" in d)start("flash");
   else if("home" in d||"quit" in d)home();
   else if("book" in d)book();
+  else if("stats" in d)stats();
   else if("settings" in d){askReset=false;settings()}
   else if("intro" in d)intro(+d.intro);
   else if("introdone" in d){S.seen=1;save();home()}
@@ -519,6 +622,7 @@ app.addEventListener("click",e=>{
   else if("next" in d){L.i++;show()}
   else if(q.done)return;
   else if("reveal" in d)reveal();
+  else if("m" in d){const a=d.m.split(":");pickM(+a[0],+a[1])}
   else if("opt" in d){q.sel=+d.opt;draw()}
   else if("tile" in d){q.pick.push(+d.tile);draw()}
   else if("un" in d){q.pick.splice(+d.un,1);draw()}
