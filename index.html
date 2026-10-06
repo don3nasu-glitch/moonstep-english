@@ -258,7 +258,7 @@ function speak(t,line){
   const key=line?AUDL[t]||AUD[t]:AUD[t]||AUDL[t];
   if(!key||!voice||noAudio)return tts(t);
   try{
-    voice.src="audio/"+key+".mp3";voice.playbackRate=S.rate==="slow"?.8:1;
+    voice.src="audio/"+key+".mp3?v=3";voice.playbackRate=S.rate==="slow"?.8:1;
     const pr=voice.play();
     if(pr&&pr.then)pr.then(()=>{audOk=true},e=>{if(e&&e.name==="AbortError")return;if(e&&e.name==="NotAllowedError")return; // 途中で次の音声に切り替えた／自動再生が止められた
       audFail++;if(!audOk&&audFail>=2)noAudio=true;tts(t)}); // ファイルが無い環境では端末の読み上げに切り替える
@@ -319,7 +319,7 @@ function settings(){
   <div class="set"><h2>1日の目標</h2>${seg("goal",[[30,"30 XP"],[50,"50 XP"],[100,"100 XP"]])}<p class="sub">1レッスンでおよそ60〜90 XPです。</p></div>
   <div class="set"><h2>学習記録を書き出す</h2><p class="sub">下の文字列をコピーして保管すると、別の端末や機種変更のあとで読み込めます。</p><textarea id="exp" readonly aria-label="書き出し用の文字列">${exportCode()}</textarea><button class="btn ghost" data-copy>コピーする</button></div>
   <div class="set"><h2>学習記録を読み込む</h2><p class="sub">書き出した文字列を貼り付けます。いまの記録は置き換わります。</p><textarea id="imp" aria-label="読み込む文字列" placeholder="ここに貼り付け"></textarea>${setErr?`<p class="fb ng">${setErr}</p>`:""}<button class="btn ghost" data-import>読み込む</button></div>
-  <div class="set"><h2>音声について</h2><p class="sub">模範音声は、LibriTTS（CC BY 4.0）をもとにした Piper の音声モデルで作成しています。音声ファイルを読み込めないときは、端末の読み上げ機能に切り替わります。</p></div>
+  <div class="set"><h2>音声について</h2><p class="sub">模範音声は、音声合成モデル Kokoro（Apache License 2.0）で作成したアメリカ英語です。音声ファイルを読み込めないときは、端末の読み上げ機能に切り替わります。</p></div>
   <div class="set"><h2>はじめの案内</h2><button class="btn ghost" data-intro="0">もう一度見る</button></div>
   <div class="set"><h2>学習記録を消す</h2>${askReset?`<p class="fb ng">すべての学習記録が消えます。元に戻せません。</p><div class="row"><button class="btn ghost" data-resetyes>消す</button><button class="btn" data-resetno>やめる</button></div>`:`<button class="btn ghost" data-reset>記録をリセットする</button>`}</div>`;
   setMsg="";setErr="";
