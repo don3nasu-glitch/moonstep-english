@@ -161,6 +161,7 @@ textarea:focus-visible{outline:2px solid var(--moon);outline-offset:2px}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .mc{min-height:62px;background:var(--panel);border:1px solid var(--line);box-shadow:0 3px 0 var(--line);color:var(--ink);border-radius:12px;padding:8px 10px;cursor:pointer;font-size:.92rem;line-height:1.35;transition:transform .08s}
 .mc.sel{border-color:var(--flame);box-shadow:0 3px 0 var(--flame);background:var(--deep)}.mc.fin{border-color:var(--ok);color:var(--ok);box-shadow:none;opacity:.55;animation:pop .3s}.mc.bad{border-color:var(--ng);color:var(--ng);animation:shake .35s}
+.tipc{background:linear-gradient(135deg,#2a2f6e,#1c2550);border:1px solid var(--moon);border-radius:16px;padding:16px}.tipc b{font-size:1.2rem;color:var(--moon)}.tipc p{margin:8px 0 0;line-height:1.8}
 </style>
 </head>
 <body>
@@ -273,12 +274,74 @@ const UNITS=[
   ["p153","It was nice talking to you.","お話しできてよかったです。"],["p154","I have to go now.","もう行かなければなりません。"],["p155","Take care of yourself.","体に気をつけて。"],["p156","Have a nice day.","よい一日を。"],
   ["p157","Long time no see.","久しぶりです。"],["p158","How have you been?","元気にしていましたか？"],["p159","I've been busy, but I'm fine.","忙しかったけれど、元気です。"],["p160","Say hello to your family.","ご家族によろしく伝えてください。"]],
   r:[["Long time no see! How have you been?",6],["Oh, it's already five o'clock.",1,"もう帰る時間"],["Thank you for coming today. Goodbye!",3]],
-  v:[["v038",3,"Have a nice weekend.","よい週末を。"],["v039",3,"Have a nice trip.","よい旅を。"]]}
+  v:[["v038",3,"Have a nice weekend.","よい週末を。"],["v039",3,"Have a nice trip.","よい旅を。"]]},
+ {t:"第二十一歩 空港",d:"入国と空港でのやりとり",p:[
+  ["p161", "Here is my passport.", "パスポートです。"],["p162", "I'm here for sightseeing.", "観光で来ました。"],["p163", "I'm staying for five days.", "5日間滞在します。"],["p164", "Where is the baggage claim?", "手荷物受取所はどこですか？"],["p165", "My suitcase is missing.", "スーツケースが見つかりません。"],["p166", "Where can I exchange money?", "どこで両替できますか？"],["p167", "I'd like a window seat.", "窓側の席をお願いします。"],["p168", "What time does boarding start?", "搭乗は何時に始まりますか？"]],
+  r:[["May I see your passport, please?", 0],["What is the purpose of your visit?", 1],["How long are you staying?", 2]]},
+ {t:"第二十二歩 一杯",d:"カフェで注文する",p:[
+  ["p169", "Can I get a coffee?", "コーヒーをください。"],["p170", "For here, please.", "店内でお願いします。"],["p171", "To go, please.", "持ち帰りでお願いします。"],["p172", "A small one, please.", "小さいサイズをお願いします。"],["p173", "No sugar, please.", "砂糖なしでお願いします。"],["p174", "Can I have a receipt?", "レシートをもらえますか？"],["p175", "Is this seat free?", "この席は空いていますか？"],["p176", "That's all, thank you.", "以上です、ありがとう。"]],
+  r:[["Hi. What can I get for you?", 0],["For here or to go?", 1, "店内で飲む"],["Anything else?", 7]]},
+ {t:"第二十三歩 在りか",d:"どこに何があるかを話す",p:[
+  ["p177", "There is a park near here.", "この近くに公園があります。"],["p178", "Is there a bank around here?", "このあたりに銀行はありますか？"],["p179", "It's next to the station.", "駅のとなりです。"],["p180", "It's across from the hotel.", "ホテルの向かいです。"],["p181", "It's on the second floor.", "2階にあります。"],["p182", "There are many shops here.", "ここには店がたくさんあります。"],["p183", "My keys are on the table.", "私の鍵はテーブルの上にあります。"],["p184", "It's in front of you.", "あなたの目の前にあります。"]],
+  r:[["Excuse me, where is the post office?", 2, "郵便局は駅のとなり"],["Which floor is the restaurant on?", 4, "レストランは2階"],["Where is my phone?", 7, "相手の電話が、相手の目の前にある"]]},
+ {t:"第二十四歩 比べ",d:"くらべて話す",p:[
+  ["p185", "This one is cheaper.", "こちらのほうが安いです。"],["p186", "Which is better?", "どちらがいいですか？"],["p187", "I like this one better.", "こちらのほうが好きです。"],["p188", "It's bigger than mine.", "私のより大きいです。"],["p189", "This is the best.", "これがいちばんです。"],["p190", "It's more expensive than that.", "あれより高いです。"],["p191", "He is taller than me.", "彼は私より背が高いです。"],["p192", "It's the same as yours.", "あなたのと同じです。"]],
+  r:[["We have red and blue. Which do you like?", 2, "手に持っているほうが好き"],["How is the pizza here?", 4, "今までで一番おいしい"],["What kind of phone do you have?", 7, "相手と同じ機種を持っている"]]},
+ {t:"第二十五歩 力",d:"できること・できないこと",p:[
+  ["p193", "I can swim.", "泳げます。"],["p194", "I can't drive.", "運転できません。"],["p195", "Can you speak Japanese?", "日本語を話せますか？"],["p196", "I can speak a little English.", "英語を少し話せます。"],["p197", "Can you cook?", "料理はできますか？"],["p198", "I'm good at singing.", "歌うのが得意です。"],["p199", "I'm not good at math.", "数学は得意ではありません。"],["p200", "I can't find my ticket.", "切符が見つかりません。"]],
+  r:[["Can you speak English?", 3],["Shall we rent a car?", 1, "運転免許を持っていない"],["What are you good at?", 5]]},
+ {t:"第二十六歩 決まり",d:"しなければならないこと",p:[
+  ["p201", "I have to go to work.", "仕事に行かなければなりません。"],["p202", "You should take a rest.", "休んだほうがいいですよ。"],["p203", "You don't have to hurry.", "急がなくていいですよ。"],["p204", "Do I have to pay now?", "今払わなければなりませんか？"],["p205", "You can't park here.", "ここには駐車できません。"],["p206", "I must finish this today.", "今日これを終えなければなりません。"],["p207", "You should try it.", "試してみたほうがいいですよ。"],["p208", "Do I need a ticket?", "チケットは必要ですか？"]],
+  r:[["I'm so tired today.", 1],["Wait, I'm almost ready!", 2, "時間にはまだ余裕がある"],["Can you come to the party tonight?", 5, "今日中に終える仕事がある"]]},
+ {t:"第二十七歩 今",d:"今していることを話す",p:[
+  ["p209", "What are you doing?", "何をしているのですか？"],["p210", "I'm cooking dinner.", "夕食を作っています。"],["p211", "I'm waiting for my friend.", "友達を待っています。"],["p212", "It's raining now.", "今、雨が降っています。"],["p213", "Are you listening?", "聞いていますか？"],["p214", "I'm looking for my keys.", "鍵を探しています。"],["p215", "She is talking on the phone.", "彼女は電話で話しています。"],["p216", "I'm just thinking.", "ちょっと考えているだけです。"]],
+  r:[["Hi! What are you doing?", 1, "夕食のしたく中"],["Why are you standing here?", 2],["You are so quiet. Are you okay?", 7]]},
+ {t:"第二十八歩 経験",d:"したことがあるかを話す",p:[
+  ["p217", "Have you ever been abroad?", "海外に行ったことがありますか？"],["p218", "I've been there twice.", "そこには2回行ったことがあります。"],["p219", "I've already eaten.", "もう食べました。"],["p220", "I haven't finished yet.", "まだ終わっていません。"],["p221", "Have you seen this movie?", "この映画を見たことがありますか？"],["p222", "I've lived here for two years.", "ここに2年住んでいます。"],["p223", "I've just arrived.", "ちょうど着いたところです。"],["p224", "I've heard of it.", "それは聞いたことがあります。"]],
+  r:[["Have you been to Kyoto?", 1],["Would you like some lunch?", 2, "もう食事をすませた"],["Are you done with your homework?", 3]]},
+ {t:"第二十九歩 招き",d:"誘う・誘いにこたえる",p:[
+  ["p225", "Are you free this weekend?", "今週末は空いていますか？"],["p226", "Why don't we have lunch?", "昼食を一緒にどうですか？"],["p227", "I'm having a party.", "パーティーを開きます。"],["p228", "Can you come?", "来られますか？"],["p229", "What should I bring?", "何を持っていけばいいですか？"],["p230", "Thank you for inviting me.", "招待してくれてありがとう。"],["p231", "Maybe next time.", "また今度にします。"],["p232", "I'm afraid I can't make it.", "残念ですが、行けません。"]],
+  r:[["I'm having a party on Friday. Please come!", 5],["Do you want to see a movie tonight?", 6, "今夜は都合が悪い"],["Great, see you at my house on Saturday!", 4]]},
+ {t:"第三十歩 予約",d:"電話で予約する",p:[
+  ["p233", "I'd like to make a reservation.", "予約をしたいのですが。"],["p234", "For two people at seven.", "7時に2名でお願いします。"],["p235", "Do you have a table tonight?", "今夜、席は空いていますか？"],["p236", "Under the name Sato.", "佐藤の名前でお願いします。"],["p237", "Can I change my reservation?", "予約を変更できますか？"],["p238", "I'd like to cancel it.", "キャンセルしたいのですが。"],["p239", "What time do you close?", "何時に閉まりますか？"],["p240", "I'll be there soon.", "もうすぐ着きます。"]],
+  r:[["Thank you for calling. How can I help you?", 0],["For how many people, and what time?", 1],["May I have your name, please?", 3]]},
+ {t:"第三十一歩 行き違い",d:"店でのトラブルを伝える",p:[
+  ["p241", "This is not what I ordered.", "注文したものと違います。"],["p242", "My order hasn't come yet.", "注文がまだ来ていません。"],["p243", "I think this is wrong.", "これは間違っていると思います。"],["p244", "Can I return this?", "これを返品できますか？"],["p245", "It doesn't work.", "動きません。"],["p246", "Can I get a refund?", "返金してもらえますか？"],["p247", "Could you check again?", "もう一度確認してもらえますか？"],["p248", "I'd like to exchange this.", "これを交換したいのですが。"]],
+  r:[["Here is your pasta.", 0, "ピザを注文したのにパスタが来た"],["Is everything okay with the bill?", 2, "会計の金額が違う"],["Is something wrong with the camera?", 4]]},
+ {t:"第三十二歩 案内",d:"道を教える",p:[
+  ["p249", "Go straight for two blocks.", "2ブロックまっすぐ進んでください。"],["p250", "Turn right at the light.", "信号を右に曲がってください。"],["p251", "It's on your left.", "左側にあります。"],["p252", "You can't miss it.", "すぐにわかりますよ。"],["p253", "It's about five minutes on foot.", "歩いて5分くらいです。"],["p254", "I'll show you the way.", "道を案内しますよ。"],["p255", "You should take a taxi.", "タクシーに乗ったほうがいいですよ。"],["p256", "I'm not from here.", "このあたりの者ではありません。"]],
+  r:[["Excuse me, how do I get to the museum?", 0, "美術館は2ブロック先"],["Is it far from here?", 4, "歩いて5分ほど"],["Do you know where the city hall is?", 7, "自分も旅行者で知らない"]]},
+ {t:"第三十三歩 理由",d:"理由をたずねる・答える",p:[
+  ["p257", "Why are you learning English?", "なぜ英語を学んでいるのですか？"],["p258", "Because I want to travel.", "旅行したいからです。"],["p259", "That's why I'm here.", "だからここにいるのです。"],["p260", "What happened?", "何があったのですか？"],["p261", "I was late because of the rain.", "雨のせいで遅れました。"],["p262", "I'm tired, so I'll go home.", "疲れたので家に帰ります。"],["p263", "How come?", "どうして？"],["p264", "There is no reason.", "理由はありません。"]],
+  r:[["Why are you learning English?", 1],["I can't go to the party tonight.", 6],["Why were you late this morning?", 4]]},
+ {t:"第三十四歩 もしも",d:"条件をつけて話す",p:[
+  ["p265", "If it rains, I'll stay home.", "雨なら家にいます。"],["p266", "Call me when you arrive.", "着いたら電話してください。"],["p267", "If you have time, please come.", "時間があれば来てください。"],["p268", "Let me know if you need help.", "助けが必要なら知らせてください。"],["p269", "I'll go if you go.", "あなたが行くなら私も行きます。"],["p270", "When I was a child, I lived in Osaka.", "子どものころ、大阪に住んでいました。"],["p271", "If I were you, I would go.", "私があなたなら、行きます。"],["p272", "I'll tell you when I know.", "わかったら伝えます。"]],
+  r:[["What will you do tomorrow?", 0, "天気しだいで決める"],["Are you going to the festival?", 4],["Should I take this job? What do you think?", 6]]},
+ {t:"第三十五歩 姿",d:"物や人のようすを説明する",p:[
+  ["p273", "What does it look like?", "それはどんな見た目ですか？"],["p274", "It's small and black.", "小さくて黒いです。"],["p275", "It's made of wood.", "木でできています。"],["p276", "What is it used for?", "それは何に使うのですか？"],["p277", "It's used for cooking.", "料理に使います。"],["p278", "She has long hair.", "彼女は髪が長いです。"],["p279", "He looks like his father.", "彼は父親に似ています。"],["p280", "It's something like this.", "こんな感じのものです。"]],
+  r:[["I found a wallet. What does yours look like?", 1],["What is this tool used for?", 4],["What does your sister look like?", 5]]},
+ {t:"第三十六歩 学び",d:"英語についてたずねる",p:[
+  ["p281", "How do you say this in English?", "これは英語で何と言いますか？"],["p282", "How do you spell it?", "つづりはどう書きますか？"],["p283", "What's the difference?", "違いは何ですか？"],["p284", "Is this correct?", "これで合っていますか？"],["p285", "I made a mistake.", "間違えました。"],["p286", "Could you explain it again?", "もう一度説明してもらえますか？"],["p287", "I'm still learning.", "まだ勉強中です。"],["p288", "I want to speak fluently.", "流ちょうに話したいです。"]],
+  r:[["My name is Siobhan.", 1, "名前のつづりがわからない"],["Your English is very good!", 6],["Why do you practice every day?", 7]]},
+ {t:"第三十七歩 うわさ",d:"聞いた話を伝える",p:[
+  ["p289", "I heard you got a new job.", "新しい仕事に就いたと聞きました。"],["p290", "Did you know that?", "それを知っていましたか？"],["p291", "Are you serious?", "本気ですか？"],["p292", "I didn't know that.", "それは知りませんでした。"],["p293", "Who told you that?", "だれから聞いたのですか？"],["p294", "It's a secret.", "秘密です。"],["p295", "I'm not sure.", "よくわかりません。"],["p296", "That's good news.", "それはいい知らせですね。"]],
+  r:[["Tom is moving to Japan next month.", 3],["I passed the driving test!", 7],["Is the store open on Sunday?", 6]]},
+ {t:"第三十八歩 相談",d:"相談する・助言する",p:[
+  ["p297", "What should I do?", "どうすればいいですか？"],["p298", "Can I ask your advice?", "相談してもいいですか？"],["p299", "Why don't you ask him?", "彼に聞いてみたらどうですか？"],["p300", "You'd better see a doctor.", "医者に診てもらったほうがいいですよ。"],["p301", "I can't decide.", "決められません。"],["p302", "It's up to you.", "あなたしだいです。"],["p303", "That's a good idea.", "それはいい考えですね。"],["p304", "Take your time.", "ゆっくりでいいですよ。"]],
+  r:[["Where shall we eat tonight?", 5],["Let's ask the teacher for help.", 6],["Sorry, I need a few more minutes.", 7]]},
+ {t:"第三十九歩 祝い",d:"お祝いとお礼を言う",p:[
+  ["p305", "Happy birthday to you.", "お誕生日おめでとう。"],["p306", "Congratulations on your wedding.", "ご結婚おめでとうございます。"],["p307", "This is for you.", "これをどうぞ。"],["p308", "I hope you like it.", "気に入ってもらえるといいのですが。"],["p309", "You shouldn't have.", "そんな、わざわざ。", "贈り物をもらって、恐縮する"],["p310", "I really appreciate it.", "本当に感謝しています。"],["p311", "Happy New Year.", "あけましておめでとう。"],["p312", "Good luck with your exam.", "試験がんばってね。"]],
+  r:[["Today is my birthday!", 0],["I have a test tomorrow.", 7],["Here is a small present for you.", 5]]},
+ {t:"第四十歩 夢",d:"目標と夢を話す",p:[
+  ["p313", "What's your dream?", "あなたの夢は何ですか？"],["p314", "I want to be a teacher.", "先生になりたいです。"],["p315", "I've decided to study abroad.", "留学することに決めました。"],["p316", "I'm working on it.", "取り組んでいるところです。"],["p317", "It's never too late.", "遅すぎることはありません。"],["p318", "I'll keep trying.", "挑戦し続けます。"],["p319", "My goal is to speak English well.", "目標は英語を上手に話すことです。"],["p320", "One step at a time.", "一歩ずつ。"]],
+  r:[["What do you want to be in the future?", 1],["Is your report finished?", 3, "まだ作業の途中"],["Am I too old to start learning?", 4]]}
 ];
+// 各歩みの「ポイント」：[見出し, 説明]。初めてその歩みに入るときに表示する
+const TIPS=[["I'm ～ / My name is ～", "自己紹介は I'm＋名前 でも My name is＋名前 でも言えます。出身は I'm from＋場所。"], ["Where is ～?", "場所をたずねる基本の形です。I'm looking for ～ は「～を探しています」。"], ["I like ～ing", "好きなことは I like＋動詞ing。Let's＋動詞 で「～しましょう」と誘えます。"], ["Can I ～? / I'll have ～", "Can I＋動詞 は「～してもいいですか・もらえますか」。注文は I'll have ～ で言えます。"], ["Do you have ～?", "店で「～はありますか」とたずねる形。I'll take it. は「これを買います」。"], ["It's＋時刻 / at＋時刻", "時刻は It's seven thirty.。「～時に」は at をつけて at noon のように言います。"], ["I'm＋気持ち", "I'm＋形容詞 で気持ちを伝えます。so は「とても」、a little は「少し」。"], ["Can you ～? / Could you ～?", "頼むときは Can you ～?。Could you ～? にすると、よりていねいです。"], ["過去のこと", "go→went、stay→stayed、watch→watched のように動詞を過去の形にします。質問は Did you ～?。"], ["I'm going to ～ / I'll ～", "前から決めている予定は be going to、その場で決めたことは will（I'll）で言います。"], ["I'll ～ later", "「あとで～します」は I'll＋動詞＋later。電話やメッセージでよく使います。"], ["It's＋天気 / いつもの習慣", "天気は It's sunny. のように It's で言います。習慣は現在形で、usually（たいてい）を添えます。"], ["He / She のとき", "主語が he・she のとき、動詞に s がつきます。質問は What does he do? のように does を使います。"], ["Which ～? / Does this ～?", "Which は「どの」。Does this bus go to ～? で行き先を確かめられます。"], ["May I ～? / Could you ～?", "May I ～? は許可を求めるていねいな形。引き受けるときは Sure, no problem.。"], ["I'd like to ～", "I want to よりていねいな「～したいのですが」。ホテルや店でよく使います。"], ["I have＋症状", "症状は I have a headache. のように have で言います。My ～ hurts は「～が痛い」。"], ["I work at ～ / I'm a ～", "職場は I work at＋場所、職業は I'm a（an）＋職業 で言います。"], ["I enjoy ～ing / I'm into ～", "enjoy のあとは動詞ing。I'm into ～ は「～にはまっている」というくだけた言い方です。"], ["How have you been?", "久しぶりに会った相手に「（最近）どうしていましたか」とたずねる形です。"], ["for＋目的・期間", "I'm here for sightseeing.（観光で）、I'm staying for five days.（5日間）。for は目的にも期間にも使えます。"], ["～, please.", "名詞＋please で短く注文できます。For here は「店内で」、To go は「持ち帰りで」。"], ["There is / There are", "「～があります」。1つなら is、2つ以上なら are。場所は next to（となり）、across from（向かい）、in front of（前）。"], ["くらべる形", "短い語は -er（cheaper）、長い語は more（more expensive）。「いちばん」は the best のように the をつけます。"], ["can / can't", "can＋動詞 で「～できる」、can't で「～できない」。be good at ～ing は「～が得意」。"], ["have to / should", "have to は「しなければならない」、should は「したほうがいい」、don't have to は「しなくていい」。"], ["be＋動詞ing", "今していることは am / is / are＋動詞ing で言います。I'm cooking.（料理中です）。"], ["have＋過去分詞", "経験（I've been there.）、完了（I've already eaten.）、続いていること（I've lived here for two years.）を言えます。"], ["Why don't we ～?", "「～しませんか」と誘う形。断るときは I'm afraid ～ をつけると、やわらかくなります。"], ["電話での I'd like to ～", "予約は I'd like to make a reservation.。人数は for two people、時刻は at seven で伝えます。"], ["This is not what ～", "what I ordered は「私が注文したもの」。困ったときは、落ち着いて事実を短く伝えます。"], ["動詞から始めて道案内", "Go straight. / Turn right. のように動詞から言います。on your left は「左側に」。"], ["Why? — Because ～", "理由は Because で答えます。because of＋名詞 は「～のせいで」、so は「だから」。"], ["if / when", "If it rains, I'll stay home.（もし雨なら）。if や when のあとは、先のことでも現在形で言います。"], ["look like / be made of", "look like は「～に似ている・～のように見える」。be made of は「～でできている」。"], ["How do you ～?", "How do you say this in English? と How do you spell it? は、学んでいる間ずっと役に立つ質問です。"], ["I heard (that) ～", "聞いた話を伝える形です。I'm not sure. は「はっきりとはわかりません」。"], ["should / Why don't you ～?", "助言の形です。You'd better ～ は強めの言い方なので、親しい相手に使います。"], ["Congratulations on ～ / Good luck with ～", "お祝いには on、応援には with を続けます。"], ["I want to be ～ / I've decided to ～", "なりたいものは want to be、決めたことは have decided to＋動詞 で言います。"]];
 const slug=en=>en.toLowerCase().replace(/[^a-z ]/g,"").trim();
 const ALL=UNITS.flatMap((u,i)=>u.p.map((p,j)=>({id:p[0],u:i,j,en:p[1],ja:p[2],note:p[3]})));
 const VARS=UNITS.flatMap((u,i)=>(u.v||[]).map(v=>({id:v[0],u:i,en:v[2],ja:v[3],base:u.p[v[1]][1]})));
-const KIND={match:"ペアを見つける",meaning:"意味を選ぶ",build:"英語に組み立てる",listen:"聞き取る",speak:"声に出す",reply:"会話で返事をする",flash:"英語で口に出す"};
+const KIND={cloze:"空いた所に入る語を選ぶ",match:"ペアを見つける",meaning:"意味を選ぶ",build:"英語に組み立てる",listen:"聞き取る",speak:"声に出す",reply:"会話で返事をする",flash:"英語で口に出す"};
 const GOAL=50, KEY="moonstep-english-v1", GAP=[1,3,7,14,30];
 const day=n=>new Date(Date.now()+n*864e5-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
 let S={xp:0,streak:0,last:"",done:{},rev:{},day:"",dayXp:0};
@@ -338,9 +401,9 @@ function hello(nDue,next){ // 案内役のひとこと（学習の状況に合�
 const sum=o=>Object.values(o||{}).reduce((a,b)=>a+(+b||0),0);
 function badges(){ // 実績。いまの学習記録から毎回計算する
   const u=Object.keys(S.done).length,r=Object.keys(S.rev).length,st=Math.max(S.streak,S.maxStreak||0);
-  return [["first","🌒","最初の一歩","歩みを1つクリア",u>=1],["u5","🌓","五つの歩み","歩みを5つクリア",u>=5],["u10","🌔","十の歩み","歩みを10クリア",u>=10],["u20","🌕","満月","全20の歩みをクリア",u>=20],
+  return [["first","🌒","最初の一歩","歩みを1つクリア",u>=1],["u5","🌓","五つの歩み","歩みを5つクリア",u>=5],["u10","🌔","十の歩み","歩みを10クリア",u>=10],["u20","🌕","二十の歩み","歩みを20クリア",u>=20],["u40","🌝","満月","全40の歩みをクリア",u>=UNITS.length],
     ["s3","🔥","三日つづけた","3日連続で学習",st>=3],["s7","🔥","一週間","7日連続で学習",st>=7],["s30","🔥","ひと月","30日連続で学習",st>=30],
-    ["p50","📖","50の言葉","50文を学習",r>=50],["p100","📚","100の言葉","100文を学習",r>=100],["p160","🏛","すべての言葉","160文を学習",r>=160],
+    ["p50","📖","50の言葉","50文を学習",r>=50],["p100","📚","100の言葉","100文を学習",r>=100],["p160","🏛","160の言葉","160文を学習",r>=160],["p320","🏯","320の言葉","320文を学習",r>=320],
     ["pf1","✨","満ちた一歩","ミスなしでクリア",(S.perfect||0)>=1],["pf10","💎","磨かれた歩み","ミスなしで10回クリア",(S.perfect||0)>=10],
     ["c10","⚡","10連続正解","1回の学習で10連続正解",(S.bestCombo||0)>=10],["t5","💬","会話の達人","3往復の会話を5回",sum(S.talk)>=5],["x1000","⭐","1000 XP","合計1000XPを獲得",S.xp>=1000]];
 }
@@ -374,7 +437,7 @@ function stats(){
 
 const BLANK=()=>({xp:0,streak:0,last:"",done:{},rev:{},day:"",dayXp:0,talk:{},days:{},bg:{}});
 const PAGES=[
-  ["月の歩みで、話せる英語へ","案内役のすずねです。いっしょに歩いていきましょう。1レッスンは約3分。聞いて、組み立てて、声に出します。全20の歩みで、場面ごとの言い方を身につけます。"],
+  ["月の歩みで、話せる英語へ","案内役のすずねです。いっしょに歩いていきましょう。1レッスンは約3分。聞いて、組み立てて、声に出します。全40の歩みで、場面ごとの言い方と文の組み立てを身につけます。"],
   ["口に出すのが、いちばんの近道","答えを見る前に英語を声に出し、言えたかどうかを自分で判定します。学んだ文は日をあけて復習に戻ってきます。"],
   ["録音は任意です","自分の声を録って聞き直せます。マイクを許可しなくても、すべての学習ができます。録音はこの端末の中だけで扱い、どこにも送りません。"]];
 function intro(n){
@@ -427,6 +490,7 @@ function start(mode,unit){
     const rs=shuffle(UNITS[unit].r).slice(0,2),ph=shuffle(ALL.filter(a=>a.u===unit&&!rs.some(r=>r[1]===a.j)));let pi=0,ri=0; // 会話2文＋残り6文＝8文を一度ずつ
     q=["meaning","listen","build","reply","speak","flash","reply","flash"].map(t=>t==="reply"?{p:ALL.find(a=>a.u===unit&&a.j===rs[ri][1]),sit:rs[ri][2],line:rs[ri++][0],type:t}:{p:ph[pi++],type:t});
     const vs=shuffle(VARS.filter(v=>v.u===unit));if(vs[0])q.push({p:vs[0],type:"flash"});
+    q.push({p:q[0].p,type:"cloze"}); // 最初に意味を見た文を、穴埋めで思い出す
     q.splice(5,0,{p:ph[0],type:"match",unit}); // 途中の息抜き：英語と意味のペア合わせ
   }else if(mode==="talk"){ // 日本語なしで、相手の英語を聞いて口で返す、を3回つなぐ
     const c=UNITS[unit].c;
@@ -439,12 +503,26 @@ function start(mode,unit){
     q=shuffle(pool.length?pool:ALL.filter(a=>a.u===0)).slice(0,10).map(p=>({p,type:"flash"}));
   }
   q.forEach(x=>x.timed=mode==="flash");
-  L={mode,unit,q,i:0,right:0,total:0};show();
+  L={mode,unit,q,i:0,right:0,total:0};
+  if(mode==="unit"&&TIPS[unit]&&!S.done[unit])return tip();
+  show();
+}
+function tip(){ // 初めての歩みの前に、要点と例文を見せる
+  const u=UNITS[L.unit],t=TIPS[L.unit];try{window.scrollTo(0,0)}catch(e){}
+  app.innerHTML=`<div class="top"><button class="x" data-quit aria-label="やめる">×</button><h2>${u.t}</h2></div>
+  <span class="kind">この歩みのポイント</span>
+  <div class="tipc"><b>${t[0]}</b><p>${t[1]}</p></div>
+  ${gd("まずは例を聞いてみましょう。タップすると音声が流れます。")}
+  <div class="opts">${u.p.slice(0,3).map(p=>`<button class="opt" data-hear="${p[0]}">▶ ${p[1]}<br><span class="sub">${p[2]}</span></button>`).join("")}</div>
+  <div class="dock"><button class="btn" data-go>レッスンをはじめる</button></div>`;
 }
 function setup(q){
   q.done=false;q.pick=[];q.sel=null;q.heard="";q.open=false;
   const others=f=>shuffle(ALL.filter(a=>a.id!==q.p.id&&f(a))).slice(0,2);
   if(q.type==="match"){const ps=shuffle(ALL.filter(a=>a.u===q.unit)).slice(0,4);q.cards=[shuffle(ps).map(a=>({id:a.id,t:a.en,e:1})),shuffle(ps).map(a=>({id:a.id,t:a.ja}))];q.fin={};q.msel=null;q.bad=null}
+  if(q.type==="cloze"){const tk=q.p.en.split(" "),cl=w=>w.replace(/[.?!,]/g,"");let bi=0;tk.forEach((w,i)=>{if(cl(w).length>=cl(tk[bi]).length)bi=i});
+    const ans=cl(tk[bi]),has=new Set(tk.map(w=>cl(w).toLowerCase())),pool=[...new Set(shuffle(ALL).flatMap(a=>a.en.split(" ").map(cl)))].filter(w=>w.length>=3&&!/'/.test(w)&&!has.has(w.toLowerCase())&&/^[a-z]/.test(w)===/^[a-z]/.test(ans)).sort((x,y)=>(Math.abs(x.length-ans.length)>3)-(Math.abs(y.length-ans.length)>3));
+    q.blank=tk.map((w,i)=>i===bi?w.replace(ans,"＿＿＿"):w).join(" ");q.opts=shuffle([{id:q.p.id,w:ans},{id:"x1",w:pool[0]},{id:"x2",w:pool[1]}])}
   if(q.type==="meaning")q.opts=shuffle([q.p,...others(()=>true)]);
   if(q.type==="reply")q.opts=shuffle([q.p,...others(a=>a.u===q.p.u)]);
   if(q.type==="build"||q.type==="listen")q.tiles=shuffle([...words(q.p.en),...others(()=>true).map(a=>words(a.en)[1])]);
@@ -455,7 +533,7 @@ function show(){
   setup(q);try{window.scrollTo(0,0)}catch(e){}
   if(q.type==="reply")speak(q.line,1);
   else if(q.type==="flash"){if(q.hear)speak(q.line,1);if(q.timed)timer=setTimeout(reveal,6000)}
-  else if(q.type!=="build"&&q.type!=="match")speak(q.p.en);
+  else if(q.type!=="build"&&q.type!=="match"&&q.type!=="cloze")speak(q.p.en);
   draw();
 }
 function pickM(side,n){ // ペア合わせ：英語と日本語を1枚ずつ選ぶ
@@ -480,6 +558,7 @@ function draw(){
   const opts=k=>`<div class="opts">${q.opts.map((o,n)=>`<button class="opt ${q.done?(o.id===p.id?"ok":q.sel===n?"ng":""):q.sel===n?"sel":""}" data-opt="${n}">${o[k]}</button>`).join("")}</div>`;
   if(q.type==="match"){const cl=(s,n,c)=>q.fin[c.id]?"fin":q.bad&&q.bad.some(b=>b[0]===s&&b[1]===n)?"bad":q.msel&&q.msel[0]===s&&q.msel[1]===n?"sel":"";
     body=`<p class="prompt">英語と意味のペアをタップ</p><div class="mgrid">${[0,1,2,3].map(n=>[0,1].map(s=>{const c=q.cards[s][n];return `<button class="mc ${cl(s,n,c)}" data-m="${s}:${n}" ${q.fin[c.id]?"disabled":""}>${c.t}</button>`}).join("")).join("")}</div>`}
+  if(q.type==="cloze")body=`<p class="sub">${p.ja}</p><p class="prompt">${q.done?p.en:q.blank}</p>${q.done?audio:""}${opts("w")}`;
   if(q.type==="meaning")body=`<p class="prompt">${p.en}</p>${audio}${opts("ja")}`;
   if(q.type==="reply")body=`${sit}<p class="sub">相手</p><p class="line">${q.line}</p>${audio}<p class="sub">あなたの返事を選ぶ</p>${opts("en")}`;
   if(q.type==="build"||q.type==="listen")body=`${q.type==="build"?`<p class="prompt">${ja}</p>`:audio}
@@ -519,7 +598,7 @@ function grade(ok){
   if(ok){L.right++;S.xp+=10;S.dayXp+=10;S.days[day(0)]=(S.days[day(0)]||0)+10;
     if(!m){if(!r)S.rev[id]={step:0,due:day(1)};
     else if(L.mode==="review"&&!q.retry){r.step=Math.min(r.step+1,4);r.due=day(GAP[r.step])}}
-    if(q.type==="reply")speak(q.p.en);
+    if(q.type==="reply"||q.type==="cloze")speak(q.p.en);
   }else{(L.miss=L.miss||new Set()).add(id);S.rev[id]={step:0,due:day(1)};if(!q.retry)L.q.push({...q,retry:true})}
   save();draw();
 }
@@ -619,6 +698,7 @@ app.addEventListener("click",e=>{
   else if("resetyes" in d){S=Object.assign(BLANK(),{rate:S.rate,sfx:S.sfx,goal:S.goal,seen:1});roll();save();askReset=false;setMsg="学習記録を消しました。";settings()}
   else if("hear" in d){const a=ALL.concat(VARS).find(a=>a.id===d.hear);if(a)speak(a.en)}
   else if("say" in d)(q.line&&!q.done&&!q.open?speak(q.line,1):speak(q.p.en));
+  else if("go" in d)show();
   else if("next" in d){L.i++;show()}
   else if(q.done)return;
   else if("reveal" in d)reveal();
