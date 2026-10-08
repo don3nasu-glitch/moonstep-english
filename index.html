@@ -191,6 +191,7 @@ button.chip{color:var(--ink);cursor:pointer;font:inherit}
 .sl.new{animation:fup .3s ease-out}@keyframes fup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .btn.mic{background:var(--flame);color:var(--flame-ink)}
 .lnk{background:none;border:0;color:var(--dim);text-decoration:underline;font-size:.9rem;padding:10px;cursor:pointer;align-self:center}
+.wds{font-size:1.05rem;line-height:1.7}.wds i{font-style:normal;font-weight:700}.wds i.y{color:var(--ok)}.wds i.n{color:#ffb35c;text-decoration:underline wavy}
 </style>
 </head>
 <body>
@@ -1736,7 +1737,7 @@ function srUI(q,after){
   if(st==="on")msg=`<p class="heard">🎙 聞いています…　話し終えると自動で止まります。</p>`;
   else if(st==="none")msg=`<p class="heard">声が聞き取れませんでした。もう一度どうぞ。</p>`;
   else if(st==="err")msg=`<p class="heard">この端末では発音チェックを使えませんでした。録音や自己判定で続けられます。</p>`;
-  else if(st==="done")msg=`<div class="srr ${q.sc>=.85?"ok":q.sc>=.5?"mid":"ng"}"><b>${q.sc>=.85?"◎ はっきり伝わる発音です":q.sc>=.5?"○ おしい。もう一度ためせます":"△ 聞き取りにくかったようです"}</b><span>聞き取れた英語：「${esc(q.said)}」</span><span class="sub">${ex}との一致 ${Math.round(q.sc*100)}%${after?"":"（答えを見て比べましょう）"}</span></div>`;
+  else if(st==="done")msg=`<div class="srr ${q.sc>=.85?"ok":q.sc>=.5?"mid":"ng"}"><b>${q.sc>=.85?"◎ はっきり伝わる発音です":q.sc>=.5?"○ おしい。もう一度ためせます":"△ 聞き取りにくかったようです"}</b><span>聞き取れた英語：「${esc(q.said)}」</span>${after||q.type==="speak"?`<span class="wds">${(()=>{const pool=wn(q.said).split(" ");return q.p.en.split(" ").map(w=>{const k=wn(w),i=k?pool.indexOf(k):-1;if(i>=0)pool.splice(i,1);return `<i class="${i>=0||!k?"y":"n"}">${esc(w)}</i>`}).join(" ")})()}</span><span class="sub">緑＝伝わった語　オレンジ＝もう一度</span>`:""}<span class="sub">${ex}との一致 ${Math.round(q.sc*100)}%${after?"":"（答えを見て比べましょう）"}</span></div>`;
   return msg+(after||st==="on"?"":`<button class="btn ${st==="done"?"ghost":"mic"}" data-sr>🎙 ${st==="done"?"もう一度発音チェック":"発音チェック"}</button>`);
 }
 function recClear(){ // 破棄：現在の要求・録音を無効化し、マイクをその場で離す
