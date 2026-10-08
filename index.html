@@ -1983,8 +1983,8 @@ const UNITS=[
   c:{sit:"友人の車で渋滞にはまる",t:[["Why aren't we moving at all?", 1],["They're expecting us at noon, you know.", 4],["If only we'd gotten up on time.", 7]]}},
  {t:"第四百三十四歩 防犯対策",d:"家の防犯について話す",p:[
   ["p3465", "Did you lock the back door?", "裏口の鍵、閉めた？"],["p3466", "We should install a security camera.", "防犯カメラを付けたほうがいいです。"],["p3467", "Let's get a motion sensor light.", "人感センサーライトを付けましょう。"],["p3468", "Don't post that we're away.", "留守にしていることは投稿しないで。"],["p3469", "Can you check the windows too?", "窓も確認してくれる？"],["p3470", "Better safe than sorry.", "用心するに越したことはありません。"],["p3471", "There was a break-in nearby.", "近所で空き巣があったんです。"],["p3472", "Let's ask a neighbor to watch the house.", "近所の人に家を見てもらいましょう。"]],
-  r:[["Why the sudden interest in home security?", 6],["Isn't a camera a bit too much?", 5],["Who'll keep an eye on things while we're traveling?", 7]],
-  c:{sit:"家族と家の防犯について話す",t:[["Why the sudden interest in home security?", 6],["Isn't a camera a bit too much?", 5],["Who'll keep an eye on things while we're traveling?", 7]]}},
+  r:[["Why the sudden interest in home security?", 6],["Isn't a camera a bit too much?", 5],["Who will keep an eye on things while we're away?", 7]],
+  c:{sit:"家族と家の防犯について話す",t:[["Why the sudden interest in home security?", 6],["Isn't a camera a bit too much?", 5],["So who will watch the house while we're traveling?", 7]]}},
  {t:"第四百三十五歩 共有冷蔵庫",d:"職場の共有冷蔵庫について話す",p:[
   ["p3473", "Someone ate my yogurt again.", "また誰かにヨーグルトを食べられました。"],["p3474", "Is this container yours?", "この容器、あなたのですか？"],["p3475", "Let's label everything with our names.", "全部に名前を書きましょう。"],["p3476", "Something in there smells awful.", "中で何かひどいにおいがします。"],["p3477", "Could we clean it out on Friday?", "金曜日に中を片付けませんか？"],["p3478", "This has been here for weeks.", "これ、何週間も入ったままです。"],["p3479", "I'll put up a notice.", "貼り紙をしておきます。"],["p3480", "Feel free to throw it out.", "捨ててしまってかまいません。"]],
   r:[["Why do you look so annoyed?", 0],["How do we stop people taking each other's food?", 2],["Should I toss this old container of yours?", 7]],
@@ -2015,7 +2015,7 @@ const UNITS=[
   c:{sit:"管理会社に電話で水漏れを伝える",t:[["Thanks for calling. What's the problem?", 0],["Have you done anything about it yet?", 2],["When would be a good time for a plumber to visit?", 7]]}},
  {t:"第四百四十二歩 返信が遅れて",d:"返信が遅れたことを友人に謝る",p:[
   ["p3529", "Sorry for the late reply.", "返信が遅くなってごめんなさい。"],["p3530", "Your message slipped my mind.", "メッセージのことをすっかり忘れていました。"],["p3531", "It's been a crazy week.", "怒涛の一週間だったんです。"],["p3532", "I read it and forgot to answer.", "読んだのに返事を忘れていました。"],["p3533", "Is the offer still open?", "あのお誘いはまだ有効ですか？"],["p3534", "Better late than never, right?", "遅れても返さないよりはいいよね？"],["p3535", "I'll reply faster next time.", "次はもっと早く返信します。"],["p3536", "Are we still on for Saturday?", "土曜日の予定はまだ大丈夫？"]],
-  r:[["Finally! I thought you were ignoring me.", 0],["Busy with work again?", 2],["Took you three days to answer, huh?", 5]],
+  r:[["Finally! I thought you were ignoring me.", 0],["Busy with work again?", 2],["It took you three days to answer, huh?", 5]],
   c:{sit:"返信が遅れたことを友人に謝る",t:[["Finally! I thought you were ignoring me.", 0],["Busy with work again?", 2],["Took you three days to answer, huh?", 5]]}},
  {t:"第四百四十三歩 名前が出てこない",d:"知人の名前を思い出せない",p:[
   ["p3537", "Your name is on the tip of my tongue.", "お名前がのどまで出かかっています。"],["p3538", "Sorry, remind me of your name?", "すみません、お名前をもう一度伺えますか？"],["p3539", "I'm terrible with names.", "人の名前を覚えるのが本当に苦手で。"],["p3540", "We met at the conference, right?", "会議でお会いしましたよね？"],["p3541", "Your face is so familiar.", "お顔はすごく見覚えがあります。"],["p3542", "Of course, now I remember!", "そうだ、思い出しました！"],["p3543", "Please forgive me for forgetting.", "忘れてしまってすみません。"],["p3544", "Remind me where we met?", "どこでお会いしたんでしたっけ？"]],
@@ -2989,7 +2989,7 @@ const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const wn=t=>norm(String(t).replace(/[’‘]/g,"'")).replace(/'/g,"");
 function setup(q){
   q.done=false;q.pick=[];q.sel=null;q.heard="";q.open=false;
-  const others=f=>shuffle(ALL.filter(a=>a.id!==q.p.id&&f(a))).slice(0,2);
+  const others=f=>{const seen=new Set([q.p.en,q.p.ja]);return shuffle(ALL.filter(a=>a.id!==q.p.id&&f(a))).filter(a=>{if(seen.has(a.en)||seen.has(a.ja))return false;seen.add(a.en);seen.add(a.ja);return true}).slice(0,2)}; // 同じ文・同じ訳が選択肢に重ならないように
   if(q.type==="match"){const ps=shuffle(ALL.filter(a=>a.u===q.unit)).slice(0,4);q.cards=[shuffle(ps).map(a=>({id:a.id,t:a.en,e:1})),shuffle(ps).map(a=>({id:a.id,t:a.ja}))];q.fin={};q.msel=null;q.bad=null}
   if(q.type==="cloze"){const tk=q.p.en.split(" "),cl=w=>w.replace(/[.?!,]/g,"");let bi=0;tk.forEach((w,i)=>{if(cl(w).length>=cl(tk[bi]).length)bi=i});
     const ans=cl(tk[bi]),has=new Set(tk.map(w=>cl(w).toLowerCase())),pool=[...new Set(shuffle(ALL).flatMap(a=>a.en.split(" ").map(cl)))].filter(w=>w.length>=3&&!/'/.test(w)&&!has.has(w.toLowerCase())&&/^[a-z]/.test(w)===/^[a-z]/.test(ans)).sort((x,y)=>(Math.abs(x.length-ans.length)>3)-(Math.abs(y.length-ans.length)>3));
