@@ -6250,7 +6250,11 @@ const AUD={},AUDL={};
 ALL.concat(VARS).forEach(a=>AUD[a.en]=a.id);
 STORIES.forEach((st,n)=>st.l.forEach((l,k)=>AUDL[l[1]]=`s${n}_${k}`));
 UNITS.forEach((u,i)=>{u.r.forEach((r,k)=>AUDL[r[0]]=`r${i}_${k}`);if(u.c)u.c.t.forEach((t,k)=>AUDL[t[0]]=`c${i}_${k}`)});
-let audOk=false,audFail=0,noAudio=false,enVoice=null;
+let audOk=false,audFail=0,noAudio=false,enVoice=null,probing=false;
+function audProbe(){ // 1文の音声が無いだけで全体を端末読み上げ（日本語なまりになりやすい）に切り替えない。基準の音声が取れるか確かめてから決める
+  if(probing||audOk||noAudio)return;probing=true;
+  try{fetch("audio/p001.mp3?v=4",{method:"HEAD",cache:"no-store"}).then(r=>{probing=false;if(r.ok)audOk=true;else noAudio=true},()=>{probing=false;noAudio=true})}catch(e){probing=false;noAudio=true}
+}
 function pickVoice(){ // 端末の読み上げを使う場合は、英語の声を明示的に選ぶ（日本語の声で英語を読ませない）
   try{
     const vs=speechSynthesis.getVoices().filter(v=>/^en[-_]/i.test(v.lang));
@@ -6270,7 +6274,7 @@ function speak(t,line){
     voice.src="audio/"+key+".mp3?v=4";voice.playbackRate=slowOnce?.7:S.rate==="slow"?.8:1;if(voice.preservesPitch!==undefined)voice.preservesPitch=true;slowOnce=false;
     const pr=voice.play();
     if(pr&&pr.then)pr.then(()=>{audOk=true},e=>{if(e&&e.name==="AbortError")return;if(e&&e.name==="NotAllowedError")return; // 途中で次の音声に切り替えた／自動再生が止められた
-      audFail++;if(!audOk&&audFail>=2)noAudio=true;tts(t)}); // ファイルが無い環境では端末の読み上げに切り替える
+      audFail++;if(!audOk&&audFail>=2)audProbe();tts(t)}); // その文の音声が無いときだけ端末の読み上げにする。音声フォルダ自体が無い環境かは別に確かめる
   }catch(e){tts(t)}
 }
 
