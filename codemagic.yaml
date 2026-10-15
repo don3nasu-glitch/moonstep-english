@@ -23,11 +23,12 @@ workflows:
         script: |
           cd app
           if [ "$APP_STORE_APPLE_ID" != "0" ]; then export MS_APP_ID="$APP_STORE_APPLE_ID"; fi
-          node scripts/prepare-www.js
+          node prepare-www.js
       - name: iOS プロジェクトを作る
         script: |
           cd app
           npx cap add ios
+          mkdir -p assets && cp icon-1024.png assets/icon.png
           npx capacitor-assets generate --ios --iconBackgroundColor '#0b1026' --splashBackgroundColor '#0b1026' --splashBackgroundColorDark '#0b1026'
           npx cap sync ios
       - name: Info.plist（マイク・音声認識の説明、縦向き固定）
