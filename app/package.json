@@ -1,0 +1,19 @@
+{
+  "name": "moonstep-english-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Moonstep English iOS app (Capacitor). The web app in the repository root is the single source.",
+  "scripts": {
+    "prepare-www": "node scripts/prepare-www.js"
+  },
+  "dependencies": {
+    "@capacitor/core": "8.5.3",
+    "@capacitor/ios": "8.5.3",
+    "@capacitor-community/in-app-review": "8.0.0",
+    "@capgo/capacitor-speech-recognition": "8.4.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3",
+    "@capacitor/assets": "3.0.5"
+  }
+}
