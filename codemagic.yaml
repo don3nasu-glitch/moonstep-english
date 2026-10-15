@@ -1,0 +1,59 @@
+# Moonstep English iOS アプリのビルド（Codemagic）
+# Web版（リポジトリ直下の index.html）をそのままアプリに入れるので、アプリとWeb版は常に同じ仕様になる。
+workflows:
+  moonstep-ios:
+    name: Moonstep English iOS
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: Moonstep ASC        # Codemagic の Team integrations で作る App Store Connect API キーの名前
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.donerika.moonstepenglish
+      vars:
+        BUNDLE_ID: com.donerika.moonstepenglish
+        APP_STORE_APPLE_ID: "0"              # App Store Connect の「Apple ID」(数字)。分かったら書き換える
+      node: 22
+      xcode: latest
+    scripts:
+      - name: パッケージを入れる
+        script: cd app && npm ci
+      - name: Web版の index.html をアプリに入れる
+        script: |
+          cd app
+          if [ "$APP_STORE_APPLE_ID" != "0" ]; then export MS_APP_ID="$APP_STORE_APPLE_ID"; fi
+          node scripts/prepare-www.js
+      - name: iOS プロジェクトを作る
+        script: |
+          cd app
+          npx cap add ios
+          npx capacitor-assets generate --ios --iconBackgroundColor '#0b1026' --splashBackgroundColor '#0b1026' --splashBackgroundColorDark '#0b1026'
+          npx cap sync ios
+      - name: Info.plist（マイク・音声認識の説明、縦向き固定）
+        script: |
+          P=app/ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Add :NSMicrophoneUsageDescription string 'あなたの英語の発音を録音して聞き返したり、発音チェックをしたりするためにマイクを使います。'" $P
+          /usr/libexec/PlistBuddy -c "Add :NSSpeechRecognitionUsageDescription string '話した英語を文字にして、発音チェックの採点に使います。'" $P
+          /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" $P
+          /usr/libexec/PlistBuddy -c "Add :UIUserInterfaceStyle string Dark" $P
+          /usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations" $P || true
+          /usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations array" $P
+          /usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations:0 string UIInterfaceOrientationPortrait" $P
+          /usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations~ipad" $P || true
+          /usr/libexec/PlistBuddy -c "Add :UIRequiresFullScreen bool true" $P
+      - name: 署名の設定
+        script: xcode-project use-profiles
+      - name: ビルド番号
+        script: |
+          cd app/ios/App
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+          agvtool new-version -all $((LATEST + 1))
+      - name: ipa を作る
+        script: xcode-project build-ipa --project app/ios/App/App.xcodeproj --scheme App
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
