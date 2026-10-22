@@ -6,14 +6,15 @@ workflows:
     instance_type: mac_mini_m2
     max_build_duration: 60
     integrations:
-      app_store_connect: Moonstep ASC        # Codemagic の Team integrations で作る App Store Connect API キーの名前
+      app_store_connect: shia_asc_key       # Codemagic に登録済みの App Store Connect API キー（全アプリ共通）
     environment:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.donerika.moonstepenglish
       vars:
         BUNDLE_ID: com.donerika.moonstepenglish
-        APP_STORE_APPLE_ID: "0"              # App Store Connect の「Apple ID」(数字)。分かったら書き換える
+        APP_STORE_APPLE_ID: "6825784940"     # App Store Connect の Apple ID（Moonstep English - 英会話）
+        APP_LIVE: "0"                        # App Store で公開されたら "1" にする（設定画面の「レビューを書く」が App Store を直接開く）
       node: 22
       xcode: latest
     scripts:
@@ -22,7 +23,7 @@ workflows:
       - name: Web版の index.html をアプリに入れる
         script: |
           cd app
-          if [ "$APP_STORE_APPLE_ID" != "0" ]; then export MS_APP_ID="$APP_STORE_APPLE_ID"; fi
+          if [ "$APP_LIVE" = "1" ]; then export MS_APP_ID="$APP_STORE_APPLE_ID"; fi
           node prepare-www.js
       - name: iOS プロジェクトを作る
         script: |
