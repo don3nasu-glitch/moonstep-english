@@ -32,6 +32,9 @@ workflows:
           mkdir -p assets && cp icon-1024.png assets/icon.png
           npx capacitor-assets generate --ios --iconBackgroundColor '#0b1026' --splashBackgroundColor '#0b1026' --splashBackgroundColorDark '#0b1026'
           npx cap sync ios
+          # iPhone 専用にする（iPad 用スクショ・iPad での審査を不要にする）
+          sed -i '' 's/TARGETED_DEVICE_FAMILY = "1,2";/TARGETED_DEVICE_FAMILY = 1;/g' ios/App/App.xcodeproj/project.pbxproj
+          grep -n "TARGETED_DEVICE_FAMILY" ios/App/App.xcodeproj/project.pbxproj || true
       - name: Info.plist（マイク・音声認識の説明、縦向き固定）
         script: |
           P=app/ios/App/App/Info.plist
@@ -58,4 +61,4 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
-        submit_to_testflight: true
+        submit_to_testflight: false   # App Store Connect へのアップロードだけ行う（外部テスター申請はしない）
