@@ -6214,6 +6214,10 @@ const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 // アプリの評価依頼。iOSアプリ版ではネイティブ側（StoreKit の requestReview）に任せ、Web版は App Store のIDが決まったときだけ控えめなカードを出す
 // ── アプリ版（iOS・Capacitor）とWeb版の違いは、この下にまとめる。画面・教材・学習の仕様は両方まったく同じ ──
 const CAP=(()=>{try{return !!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform())}catch(e){return false}})();
+// Web版は体験版：最初の TRIAL 歩（ステージ1〜3）と物語1〜3だけ。続きはiPhone版（有料）へ案内する。アプリ版には一切かからない
+const WEB_TRIAL=false; // App Store で配信が始まったら true にする
+const TRIAL=15,STORE_URL="https://apps.apple.com/jp/app/id6825784940";
+const TRIAL_ON=!CAP&&WEB_TRIAL,tLock=u=>TRIAL_ON&&u>=TRIAL;
 const CPM={};const CP=n=>{try{const C=window.Capacitor;if(!C)return null;if(CPM[n])return CPM[n]; // ネイティブに組み込まれたプラグインだけを使う
   if(C.isPluginAvailable&&!C.isPluginAvailable(n))return null;return CPM[n]=(C.Plugins&&C.Plugins[n])||(C.registerPlugin?C.registerPlugin(n):null)}catch(e){return null}};
 const AUD_BASE=CAP?"https://don3nasu-glitch.github.io/moonstep-english/audio/":"audio/"; // アプリは音声を同梱せず、使う分だけ取得して端末に保存
@@ -6319,15 +6323,16 @@ function badges(){ // 実績。いまの学習記録から毎回計算する
 }
 const tabs=on=>{const n=due().length;return `<div class="tabpad"></div><nav class="tabs"><div>${[["home","🌙","ホーム"],["practice","⚡","特訓"],["book","📖","フレーズ帳"],["stats","🏅","記録"]].map(([k,ic,t],x)=>`<button data-${k} class="${on===x?"on":""}"><i>${ic}</i>${t}${x===1&&n?`<em>${n}</em>`:""}</button>`).join("")}</div></nav>`};
 function qcard(){const Q=quests();return `<div class="qcard"><div class="qh"><b>今日のクエスト</b><span>💎 ${S.gem||0}</span></div>${Q.k.map(k=>{const g=goalOf(k),v=Math.min(Q.v[k]||0,g);return `<div class="qr ${Q.c[k]?"fin":""}"><span>${QD[k][0].replace("{n}",g)}</span><div class="bar"><i style="width:${v/g*100}%"></i></div><small>${Q.c[k]?"✓ 💎+10":v+" / "+g}</small></div>`}).join("")}${(()=>{const q=mq(),v=Math.min(q.v,MQG),got=(S.mb||{})[q.m];return `<div class="qr mq ${got?"fin":""}"><span>🌙 ${+q.m.slice(5)}月のチャレンジ（クエスト${MQG}回）</span><div class="bar"><i style="width:${v/MQG*100}%"></i></div><small>${got?"✓ 💎+50":v+" / "+MQG}</small></div>`})()}</div>`}
-const stOpen=n=>!!S.done[n*5+4]||n<((S.skip||0)/5|0); // 物語nは、ステージn+1を終えると開く
+const stOpen=n=>!(TRIAL_ON&&n>=TRIAL/5)&&!!S.done[n*5+4]||n<((S.skip||0)/5|0); // 物語nは、ステージn+1を終えると開く
 const SPK={A:"エマ",B:"ケン"};
 function stories(){try{window.scrollTo(0,0)}catch(e){}
   clearTimeout(timer);recClear();L=null;
   app.innerHTML=`<div class="top"><button class="x" data-practice aria-label="もどる">×</button><h1>物語</h1></div>
   ${gd("短い物語を読みながら、聞いて答えます。ステージを終えるごとに、新しい物語が開きます。")}
-  <div class="opts">${STORIES.map((st,n)=>{const o=stOpen(n);return `<button class="pc" data-story="${n}" ${o?"":"disabled"}><i>${(S.st||{})[n]?"📗":o?"📖":"🔒"}</i><span><b>物語${n+1} ${st.t}</b><span class="sub">${o?st.d+((S.st||{})[n]?"　読了":""):`ステージ${n+1}をクリアすると開きます`}</span></span></button>`}).join("")}</div>${tabs(1)}`;
+  <div class="opts">${STORIES.map((st,n)=>{const o=stOpen(n);return `<button class="pc" data-story="${n}" ${o?"":"disabled"}><i>${(S.st||{})[n]?"📗":o?"📖":"🔒"}</i><span><b>物語${n+1} ${st.t}</b><span class="sub">${o?st.d+((S.st||{})[n]?"　読了":""):TRIAL_ON&&n>=TRIAL/5?"iPhone版で読めます":`ステージ${n+1}をクリアすると開きます`}</span></span></button>`}).join("")}</div>${tabs(1)}`;
 }
 function story(n){ // 1行ずつ読み進め、決まった所で理解クイズ
+  if(TRIAL_ON&&n>=TRIAL/5)return upsell();
   clearTimeout(timer);recClear();const st=STORIES[n];
   L={mode:"story",n,k:1,ans:{},right:0,total:0,q:[]};speak(st.l[0][1],1);sdraw();
 }
@@ -6419,17 +6424,25 @@ function home(){
   const notice=S.notice?`<p class="fb ng">教材更新に伴い学習記録をリセットしました。XP・連続日数は保持しています。</p>`:"";if(S.notice){delete S.notice;save()}if(S.frzUsed){delete S.frzUsed;save()}
   const next=UNITS.findIndex((u,i)=>!S.done[i]&&i>=(S.skip||0)); // 次に進むユニット（順番に解放）
   const cont=next>=0?`<button class="${nDue?"btn ghost":"cta"}" data-unit="${next}">${nDue?`${next?"つづきから":"はじめる"}：${UNITS[next].t}`:`<span class="sub">${next?"つづきから":"はじめる"}</span><b>${UNITS[next].t}</b><span class="sub">${UNITS[next].d}。約3分</span><span class="go">はじめる →</span>`}</button>`:"";
-  const cta=nDue?`<button class="cta" data-review><span class="sub">まずはここから</span><b>今日の復習 ${nDue}件</b><span class="sub">別の日でも口で言えるかを確かめます</span><span class="go">復習する →</span></button>${cont}`
+  let cta=nDue?`<button class="cta" data-review><span class="sub">まずはここから</span><b>今日の復習 ${nDue}件</b><span class="sub">別の日でも口で言えるかを確かめます</span><span class="go">復習する →</span></button>${cont}`
     :cont||`<button class="cta" data-flash><span class="sub">すべての歩みをクリア</span><b>6秒チャレンジ</b><span class="sub">学んだフレーズを10本、すばやく口に出す</span><span class="go">挑戦する →</span></button>`;
+  if(TRIAL_ON&&next>=TRIAL)cta=cta.replace(cont,"")||`<button class="cta" data-upsell><span class="sub">体験版の歩みをすべてクリア</span><b>続きはiPhone版で</b><span class="sub">全${UNITS.length}歩・すべての物語</span><span class="go">くわしく見る →</span></button>`;
   const X=[0,46,72,46,0,-46,-72,-46];
   app.innerHTML=`${notice}<header class="hud"><p class="brand">Moonstep English</p><span class="sp"></span><button class="chip" data-here aria-label="現在地へ移動">📍</button><span class="chip ${S.days[day(0)]>0?"":"cold"}" aria-label="連続日数${S.days[day(0)]>0?"":"（今日はまだ）"}">🔥 ${S.streak}</span><span class="chip" aria-label="今日のXP${boostOn()?"（XPブースト中）":""}">${boostOn()?"⚡":""}<span class="ring" style="--p:${pct}"></span>${Math.min(S.dayXp,goal())}/${goal()}</span><button class="say" data-settings aria-label="設定">⚙</button></header>
   ${fu?`<p class="fb ok">🛡 お守りが連続日数を守りました（${fu}日分）。</p>`:""}${S.lost&&S.lost.d===day(0)?`<div class="fb ng rep"><span>💔 ${S.lost.n}日の連続記録が途切れました。今日のうちなら、月のかけらで元に戻せます。</span><button class="btn" data-repair ${(S.gem||0)<100?"disabled":""}>🔥 💎100で修復する${(S.gem||0)<100?`（所持 💎${S.gem||0}）`:""}</button></div>`:""}${gd(hello(nDue,next))}
   ${cta}
   ${qcard()}
   ${(()=>{const pool=ALL.filter(a=>S.rev[a.id]);if(pool.length<5)return "";let h=0;for(const c of day(0))h=(h*31+c.charCodeAt(0))%100003;const a=pool[h%pool.length];return `<button class="pc dw" data-hear="${a.id}"><i>🌙</i><span><b>今日のひとこと</b><span class="dwe">▶ ${esc(a.en)}</span><span class="sub">${esc(a.ja)}</span></span></button>`})()}
-  <div class="path">${UNITS.map((u,i)=>{const n=S.done[i]||0,open=i===0||S.done[i-1]||i<=(S.skip||0),cur=i===next;
+  <div class="path">${(TRIAL_ON?UNITS.slice(0,TRIAL):UNITS).map((u,i)=>{const n=S.done[i]||0,open=i===0||S.done[i-1]||i<=(S.skip||0),cur=i===next;
     const st=i%5?"":`<div class="stage"><b>ステージ ${i/5+1}</b><span>${["入門","初級","中級","中上級","上級","達人"][i<20?0:i<50?1:i<100?2:i<180?3:i<400?4:5]}・第${i+1}〜${i+5}歩</span></div>`;
-    return st+`<div class="pn ${open?"":"off"}" style="--x:${X[i%8]}px">${cur?`<span class="popb">${i?"つづきから":"はじめる"}</span>`:""}<button class="orb ${cur?"new":open?"":"lock"}" ${open?`data-unit="${i}"`:"disabled"} aria-label="${u.t}${open?"":"（まだ開いていません）"}">${cur?"▶":open?"★".repeat(Math.min(n,3)):"🔒"}</button><span class="nm">${u.t}</span>${open?`<div class="mrow"><button class="say mini" data-guide="${i}">📘 ポイント</button>${n?`<button class="say mini" data-talk="${i}">💬 会話${S.talk[i]?` ${S.talk[i]}回`:""}</button>`:""}</div>`:""}</div>`+(i%5===4?(()=>{const st=(i-4)/5,ok=[0,1,2,3,4].every(k=>S.done[st*5+k]);return `<div class="pn ${ok?"":"off"}" style="--x:0px"><button class="orb ck ${S.ck[st]?"":ok?"new2":"lock"}" ${ok?`data-ck="${st}"`:"disabled"} aria-label="ステージ${st+1}の確認テスト">👑</button><span class="nm">ステージ${st+1} 確認テスト${S.ck[st]?"　合格":""}</span>${S.ck[st]?`<div class="mrow"><button class="say mini${S.lg[st]?" lgd":""}" data-lg="${st}">${S.lg[st]?"🏅 伝説 達成":"🏅 伝説に挑戦"}</button></div>`:""}</div>`})():"")}).join("")}</div>${tabs(0)}`;
+    return st+`<div class="pn ${open?"":"off"}" style="--x:${X[i%8]}px">${cur?`<span class="popb">${i?"つづきから":"はじめる"}</span>`:""}<button class="orb ${cur?"new":open?"":"lock"}" ${open?`data-unit="${i}"`:"disabled"} aria-label="${u.t}${open?"":"（まだ開いていません）"}">${cur?"▶":open?"★".repeat(Math.min(n,3)):"🔒"}</button><span class="nm">${u.t}</span>${open?`<div class="mrow"><button class="say mini" data-guide="${i}">📘 ポイント</button>${n?`<button class="say mini" data-talk="${i}">💬 会話${S.talk[i]?` ${S.talk[i]}回`:""}</button>`:""}</div>`:""}</div>`+(i%5===4?(()=>{const st=(i-4)/5,ok=[0,1,2,3,4].every(k=>S.done[st*5+k]);return `<div class="pn ${ok?"":"off"}" style="--x:0px"><button class="orb ck ${S.ck[st]?"":ok?"new2":"lock"}" ${ok?`data-ck="${st}"`:"disabled"} aria-label="ステージ${st+1}の確認テスト">👑</button><span class="nm">ステージ${st+1} 確認テスト${S.ck[st]?"　合格":""}</span>${S.ck[st]?`<div class="mrow"><button class="say mini${S.lg[st]?" lgd":""}" data-lg="${st}">${S.lg[st]?"🏅 伝説 達成":"🏅 伝説に挑戦"}</button></div>`:""}</div>`})():"")}).join("")}${TRIAL_ON?`<button class="cta" data-upsell style="margin-top:26px"><span class="sub">体験版はここまで</span><b>続き（全${UNITS.length}歩）はiPhone版で</b><span class="sub">広告なし・買い切り。学習の記録はWeb版とは別になります</span><span class="go">くわしく見る →</span></button>`:""}</div>${tabs(0)}`;
+}
+function upsell(){ // 体験版の終わり：iPhone版の案内
+  clearTimeout(timer);recClear();L=null;try{window.scrollTo(0,0)}catch(e){}
+  app.innerHTML=`<header class="done"><img class="pic s" src="${IMG_B}" alt="すずね"><h1>体験版はここまでです</h1><p class="sub">ここまで歩いてくれて、ありがとうございます</p></header>
+  ${gd(`Web版で遊べるのは第${TRIAL}歩までと、物語${TRIAL/5}話までです。続きの全${UNITS.length}歩・1万を超えるフレーズ・すべての物語は、iPhone版でいっしょに歩きましょう。`)}
+  <div class="set"><h2>iPhone版 Moonstep English</h2><p class="sub">広告なし・買い切りです。英語の音声はネイティブの発音で、発音チェックも使えます。Web版の学習記録はiPhone版には引き継がれません。</p></div>
+  <div class="dock"><a class="btn" href="${STORE_URL}" target="_blank" rel="noopener" style="display:block;box-sizing:border-box;text-align:center;text-decoration:none;color:inherit">App Store で見る</a><button class="btn ghost" data-home>ホームへもどる</button></div>`;
 }
 function stats(){try{window.scrollTo(0,0)}catch(e){}
   clearTimeout(timer);recClear();L=null;roll();
@@ -6502,6 +6515,7 @@ function book(){try{window.scrollTo(0,0)}catch(e){}
   ${rows?`<input id="bq" class="wr" type="search" placeholder="英語か日本語で探す" aria-label="フレーズを探す" autocomplete="off" style="margin-bottom:10px">`:""}<div class="opts" id="bk">${rows||`<p class="sub">まだ学んだフレーズがありません。最初の歩みから始めましょう。</p>`}</div>${tabs(2)}`;
 }
 function start(mode,unit){
+  if(TRIAL_ON&&(((mode==="unit"||mode==="talk")&&unit>=TRIAL)||((mode==="check"||mode==="legend")&&unit*5>=TRIAL)))return upsell();
   let q;
   if(mode==="unit"){
     const rs=shuffle(UNITS[unit].r).slice(0,2),ph=shuffle(ALL.filter(a=>a.u===unit&&!rs.some(r=>r[1]===a.j)));let pi=0,ri=0; // 会話2文＋残り6文＝8文を一度ずつ
@@ -6522,7 +6536,7 @@ function start(mode,unit){
     const ps=shuffle(ALL.filter(a=>a.u>=unit*5&&a.u<unit*5+5)).slice(0,12);
     q=ps.map((p,k)=>({p,type:["write","build","listen","cloze","build","write"][k%6]}));
   }else if(mode==="place"){ // レベル判定：ステージごとに1問。2問まちがえた所で終わる
-    q=[];for(let st=0;st*5<UNITS.length;st++)q.push({p:shuffle(ALL.filter(a=>a.u>=st*5&&a.u<st*5+5))[0],type:["meaning","cloze","build"][st%3]});
+    q=[];for(let st=0;st*5<(TRIAL_ON?TRIAL:UNITS.length);st++)q.push({p:shuffle(ALL.filter(a=>a.u>=st*5&&a.u<st*5+5))[0],type:["meaning","cloze","build"][st%3]});
   }else if(mode==="weak"){ // 苦手特訓：まちがえた回数の多い順に10文
     const ws=Object.keys(S.mc).filter(k=>S.mc[k]>0&&S.rev[k]).sort((a,b)=>S.mc[b]-S.mc[a]).slice(0,10).map(k=>ALL.concat(VARS).find(a=>a.id===k)).filter(Boolean);
     q=shuffle(ws).map((p,k)=>({p,type:["build","cloze","meaning","write"][k%4]}));
@@ -6538,6 +6552,7 @@ function start(mode,unit){
   show();
 }
 function guide(i){ // 各歩みのガイドブック：要点と8文をいつでも見られる
+  if(tLock(i))return upsell();
   clearTimeout(timer);recClear();L=null;const u=UNITS[i],t=TIPS[i];try{window.scrollTo(0,0)}catch(e){}
   app.innerHTML=`<div class="top"><button class="x" data-home aria-label="もどる">×</button><h2>${u.t}</h2></div>
   <span class="kind">この歩みのポイント</span><div class="tipc"><b>${t[0]}</b><p>${t[1]}</p></div>
@@ -6655,7 +6670,7 @@ function grade(ok){
   save();draw();
 }
 function placed(){ // レベル判定の結果：正解したステージの数だけ先を開く
-  const sk=Math.min(L.right*5,UNITS.length-1);if(sk>(S.skip||0))S.skip=sk;S.seen=1;save();const st=S.skip||0;
+  const sk=Math.min(L.right*5,(TRIAL_ON?TRIAL:UNITS.length)-1);if(sk>(S.skip||0))S.skip=sk;S.seen=1;save();const st=S.skip||0;
   app.innerHTML=`<header class="done"><img class="pic s" src="${IMG_B}" alt="すずね"><h1>レベル判定の結果</h1><p class="sub">${L.right} 問正解</p></header>
   ${gd(st?`${UNITS[st].t} から始められます。前の歩みも、いつでも学べます。`:"最初の歩みから、いっしょに始めましょう。")}
   <div class="dock"><button class="btn" data-unit="${st}">${UNITS[st].t} をはじめる</button><button class="btn ghost" data-home>道を見る</button></div>`;
@@ -6791,7 +6806,8 @@ app.addEventListener("input",e=>{if(e.target.id==="bq"){const t=e.target.value.t
 app.addEventListener("keydown",e=>{if(e.target.id==="wr"&&e.key==="Enter"&&e.target.value.trim()&&!e.isComposing){const b=document.querySelector("[data-check]");if(b)b.click()}});
 app.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b||b.disabled)return;const d=b.dataset,q=L&&L.q[L.i];
-  if("unit" in d)start("unit",+d.unit);
+  if("upsell" in d)upsell();
+  else if("unit" in d)start("unit",+d.unit);
   else if("talk" in d)start("talk",+d.talk);
   else if("review" in d)start("review");
   else if("ck" in d)start("check",+d.ck);
