@@ -14,7 +14,8 @@ workflows:
       vars:
         BUNDLE_ID: com.donerika.moonstepenglish
         APP_STORE_APPLE_ID: "6825784940"     # App Store Connect の Apple ID（Moonstep English - 英会話）
-        APP_LIVE: "0"                        # App Store で公開されたら "1" にする（設定画面の「レビューを書く」が App Store を直接開く）
+        APP_LIVE: "1"                        # App Store で公開済み（2026-11-16）。設定画面の「レビューを書く」が App Store を直接開く
+        APP_VERSION: "1.0.1"                 # App Store に出すバージョン番号。更新を出すたびに上げる
       node: 22
       xcode: latest
     scripts:
@@ -44,6 +45,19 @@ workflows:
           /usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations:0 string UIInterfaceOrientationPortrait" $P
           /usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations~ipad" $P || true
           /usr/libexec/PlistBuddy -c "Add :UIRequiresFullScreen bool true" $P
+      - name: 言語を日本語にする（App Store の「言語」欄が英語にならないように）
+        script: |
+          P=app/ios/App/App/Info.plist
+          PBX=app/ios/App/App.xcodeproj/project.pbxproj
+          /usr/libexec/PlistBuddy -c "Delete :CFBundleLocalizations" $P || true
+          /usr/libexec/PlistBuddy -c "Add :CFBundleLocalizations array" $P
+          /usr/libexec/PlistBuddy -c "Add :CFBundleLocalizations:0 string ja" $P
+          /usr/libexec/PlistBuddy -c "Set :CFBundleDevelopmentRegion ja" $P \
+            || /usr/libexec/PlistBuddy -c "Add :CFBundleDevelopmentRegion string ja" $P
+          sed -i '' 's/developmentRegion = en;/developmentRegion = ja;/' $PBX || true
+          grep -q $'\t\t\t\tja,' $PBX || sed -i '' 's/knownRegions = (/knownRegions = (\n\t\t\t\tja,/' $PBX
+          /usr/libexec/PlistBuddy -c "Print :CFBundleDevelopmentRegion" $P
+          /usr/libexec/PlistBuddy -c "Print :CFBundleLocalizations" $P
       - name: 署名の設定
         script: xcode-project use-profiles
       - name: ビルド番号
@@ -51,6 +65,7 @@ workflows:
           cd app/ios/App
           LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
           agvtool new-version -all $((LATEST + 1))
+          agvtool new-marketing-version "$APP_VERSION"
       - name: ipa を作る
         script: xcode-project build-ipa --project app/ios/App/App.xcodeproj --scheme App
     artifacts:

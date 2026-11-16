@@ -6215,7 +6215,7 @@ const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 // ── アプリ版（iOS・Capacitor）とWeb版の違いは、この下にまとめる。画面・教材・学習の仕様は両方まったく同じ ──
 const CAP=(()=>{try{return !!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform())}catch(e){return false}})();
 // Web版は体験版：最初の TRIAL 歩（ステージ1〜3）と物語1〜3だけ。続きはiPhone版（有料）へ案内する。アプリ版には一切かからない
-const WEB_TRIAL=false; // App Store で配信が始まったら true にする
+const WEB_TRIAL=true; // 2026-11-16 App Store で配信開始。Web版は体験版
 const TRIAL=15,STORE_URL="https://apps.apple.com/jp/app/id6825784940";
 const TRIAL_ON=!CAP&&WEB_TRIAL,tLock=u=>TRIAL_ON&&u>=TRIAL;
 const CPM={};const CP=n=>{try{const C=window.Capacitor;if(!C)return null;if(CPM[n])return CPM[n]; // ネイティブに組み込まれたプラグインだけを使う
