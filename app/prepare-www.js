@@ -8,4 +8,5 @@ const appId=process.env.MS_APP_ID||''; // App Store の数字ID（レビュー�
 if(appId)html=html.replace('<head>',`<head>\n<script>window.MS_APP_ID=${JSON.stringify(appId)}</script>`);
 fs.writeFileSync(path.join(www,'index.html'),html);
 for(const f of ['icon-180.png','icon-192.png','icon-512.png','manifest.webmanifest'])if(fs.existsSync(path.join(root,f)))fs.copyFileSync(path.join(root,f),path.join(www,f));
+const sz=path.join(root,'sz');if(fs.existsSync(sz))fs.cpSync(sz,path.join(www,'sz'),{recursive:true}); // すずねの表情差分
 console.log('www ready',(html.length/1048576).toFixed(1)+'MB');
