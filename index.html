@@ -261,6 +261,20 @@ h1,h2,.brand,.cta b,.stage b{font-weight:800}
 .chip.cold{filter:grayscale(1);opacity:.55}
 .fb.ok{color:#1f9a49}.fb.ng{color:#e5354e}
 .opt.ok,.mc.fin{color:#1f9a49}.opt.ng,.mc.bad{color:#e5354e}
+
+/* タイトル画面 */
+.ttl{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 80% at 50% 30%,#a88bff 0,#7c5cff 45%,#4a33b8 100%);color:#fff;text-align:center;cursor:pointer;animation:ttlIn .5s ease}
+.ttl-in{padding:24px;max-width:420px}
+.ttl-ic{width:168px;height:168px;border-radius:38px;box-shadow:0 14px 40px rgba(20,8,80,.45),0 0 0 6px rgba(255,255,255,.18);animation:ttlPop .7s cubic-bezier(.2,1.4,.4,1)}
+.ttl-h{font-family:var(--display);font-weight:800;font-size:2.1rem;letter-spacing:.02em;margin:26px 0 4px;text-shadow:0 3px 0 rgba(40,20,120,.35)}
+.ttl-s{margin:0;font-weight:700;color:#ffe08a;letter-spacing:.12em}
+.ttl-t{margin:18px 0 0;font-weight:700;opacity:.95}
+.ttl-k{display:inline-block;margin:14px 0 0;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.18);font-weight:800}
+.ttl-tap{margin-top:34px;font-size:.85rem;opacity:.8;animation:ttlBlink 1.6s ease-in-out infinite}
+@keyframes ttlIn{from{opacity:0}to{opacity:1}}
+@keyframes ttlPop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes ttlBlink{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.ttl,.ttl-ic,.ttl-tap{animation:none}}
 </style>
 </head>
 <body>
@@ -6692,7 +6706,7 @@ function reveal(){
 }
 function draw(){
   const q=L.q[L.i],p=q.p,pw=(L.i+(q.done?1:0))/L.q.length*100;let body="";
-  const audio=`<div class="aud"><button class="say" data-say>▶ 音声を聞く</button><button class="say" data-say="slow" aria-label="ゆっくり聞く">🐢</button></div>`;
+  const audio=`<div class="aud"><button class="say" data-say>▶ 音声を聞く</button><button class="say" data-say="slow" aria-label="ゆっくり聞く">🐢 ゆっくり</button></div>`;
   const self=`<div class="row"><button class="btn ghost" data-self="1">${q.type==="flash"?"見る前に言えた":"声に出して言えた"}</button><button class="btn ghost" data-self="0">まだ難しい</button></div><p class="sub">模範文と違っても、同じ意味で自然に言えたら「言えた」でかまいません。</p>`;
   const sit=q.sit?`<p class="sub">状況：${q.sit}</p>`:"",ja=p.ja+(p.note?`<br><span class="sub">（${p.note}）</span>`:"")+(p.base?`<br><span class="sub">もとの型：${p.base}</span>`:"");
   const opts=k=>`<div class="opts">${q.opts.map((o,n)=>`<button class="opt ${q.done?(o.id===p.id?"ok":q.sel===n?"ng":""):q.sel===n?"sel":""}" data-opt="${n}">${o[k]}</button>`).join("")}</div>`;
@@ -6974,7 +6988,12 @@ app.addEventListener("click",e=>{
   else if("recplay" in d)recPlay();
 });
 function applyFs(){try{document.documentElement.style.fontSize=S.fs==="l"?"18px":""}catch(e){}}applyFs();
-(S.seen||S.xp>0||Object.keys(S.done).length)?home():intro(0);
+function title(){ // 起動時のタイトル画面。タップか2.4秒で次へ
+  const go=()=>{if(!document.getElementById("ttl"))return;(S.seen||S.xp>0||Object.keys(S.done).length)?home():intro(0)};
+  const sk=S.last===day(0)||S.last===day(-1)?S.streak:0;
+  app.innerHTML=`<div id="ttl" class="ttl" role="button" aria-label="はじめる"><div class="ttl-in"><img src="icon-512.png" alt="" class="ttl-ic" onerror="this.src='${IMG_B}'"><h1 class="ttl-h">Moonstep English</h1><p class="ttl-s">− ムーンステップサーガ −</p><p class="ttl-t">月の歩みで、話せる英語へ</p>${sk>=1?`<p class="ttl-k">🔥 ${sk}日連続</p>`:""}<p class="ttl-tap">タップしてはじめる</p></div></div>`;
+  document.getElementById("ttl").addEventListener("click",go);setTimeout(go,2400)}
+title();
 </script>
 <script>if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{})</script>
 </body>
