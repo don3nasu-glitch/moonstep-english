@@ -2,10 +2,10 @@
   "appId": "com.donerika.moonstepenglish",
   "appName": "Moonstep English",
   "webDir": "www",
-  "backgroundColor": "#0b1026",
+  "backgroundColor": "#f7f5ff",
   "ios": {
     "contentInset": "never",
-    "backgroundColor": "#0b1026",
+    "backgroundColor": "#f7f5ff",
     "limitsNavigationsToAppBoundDomains": false
   }
 }

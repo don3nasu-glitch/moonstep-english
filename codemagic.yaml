@@ -31,7 +31,7 @@ workflows:
           cd app
           npx cap add ios
           mkdir -p assets && cp icon-1024.png assets/icon.png
-          npx capacitor-assets generate --ios --iconBackgroundColor '#0b1026' --splashBackgroundColor '#0b1026' --splashBackgroundColorDark '#0b1026'
+          npx capacitor-assets generate --ios --iconBackgroundColor '#f7f5ff' --splashBackgroundColor '#f7f5ff' --splashBackgroundColorDark '#f7f5ff'
           npx cap sync ios
       - name: Info.plist（マイク・音声認識の説明、縦向き固定）
         script: |
@@ -39,7 +39,7 @@ workflows:
           /usr/libexec/PlistBuddy -c "Add :NSMicrophoneUsageDescription string 'あなたの英語の発音を録音して聞き返したり、発音チェックをしたりするためにマイクを使います。'" $P
           /usr/libexec/PlistBuddy -c "Add :NSSpeechRecognitionUsageDescription string '話した英語を文字にして、発音チェックの採点に使います。'" $P
           /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" $P
-          /usr/libexec/PlistBuddy -c "Add :UIUserInterfaceStyle string Dark" $P
+          /usr/libexec/PlistBuddy -c "Add :UIUserInterfaceStyle string Light" $P
           /usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations" $P || true
           /usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations array" $P
           /usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations:0 string UIInterfaceOrientationPortrait" $P
